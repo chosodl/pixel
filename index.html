@@ -133,117 +133,34 @@
 
         // ========= 3. Game Constants & Config =========
         const gridSize = 20;
-        const GAME_FEE_ETH = '0.0001'; 
-        const DEVELOPER_WALLET = '0x68c71247712E39925d31d82FdC02dfe0f8e24de7'; // <-- ADRESSE SAHIHA DB
+        const GAME_FEE_ETH = '0.00001'; 
+        const DEVELOPER_WALLET = '0x0e315015a4ee8d5d6c4b43e300df76b965d55bdd'; 
         const MAX_LIVES = 3;
 
         // --- Maps Data ---
-        // Maze layout: 1 = Wall, 0 = Pellet, 2 = Power Pellet, 3 = Empty
-        const map1 = [
-            [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
-            [1,2,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,2,1],
-            [1,0,1,1,0,1,1,1,1,0,1,0,1,1,1,1,0,1,1,0,1],
-            [1,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,1],
-            [1,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,1],
-            [1,0,1,1,0,1,3,3,3,3,3,3,3,3,3,1,0,1,1,0,1],
-            [1,0,1,1,0,1,3,1,1,1,1,1,1,1,3,1,0,1,1,0,1], // Ghost box row 1
-            [1,0,0,0,0,1,3,1,3,3,3,3,3,1,3,1,0,0,0,0,1], // Ghost box row 2 (start positions)
-            [1,1,1,1,0,1,3,1,3,3,3,3,3,1,3,1,0,1,1,1,1], // Ghost box row 3
-            [3,3,3,1,0,1,3,1,1,1,1,1,1,1,3,1,0,1,3,3,3], // Tunnel row
-            [1,1,1,1,0,1,3,3,3,3,3,3,3,3,3,1,0,1,1,1,1],
-            [1,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,1],
-            [1,0,1,1,0,1,1,1,1,0,1,0,1,1,1,1,0,1,1,0,1],
-            [1,0,1,1,0,0,0,0,0,0,3,0,0,0,0,0,0,1,1,0,1], // Player start row
-            [1,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,1],
-            [1,0,1,1,1,1,0,0,0,0,1,0,0,0,0,1,1,1,1,0,1],
-            [1,2,0,0,0,0,0,1,1,0,1,0,1,1,0,0,0,0,0,2,1],
-            [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
-        ];
-         const map2 = [
-            [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
-            [1,2,0,0,1,1,1,0,0,0,1,0,0,0,1,1,1,0,0,2,1],
-            [1,0,1,0,0,0,0,0,1,0,1,0,1,0,0,0,0,0,1,0,1],
-            [1,0,1,0,1,1,0,1,1,0,0,0,1,1,0,1,1,0,1,0,1],
-            [1,0,0,0,1,1,0,1,1,1,1,1,1,1,0,1,1,0,0,0,1],
-            [1,1,1,0,0,0,0,3,3,3,3,3,3,3,0,0,0,0,1,1,1],
-            [1,0,0,0,1,1,0,1,1,1,1,1,1,1,0,1,1,0,0,0,1], // Ghost box row 1
-            [1,0,1,0,1,1,0,1,3,3,3,3,3,1,0,1,1,0,1,0,1], // Ghost box row 2 (start positions)
-            [1,0,1,0,0,0,0,1,3,3,3,3,3,1,0,0,0,0,1,0,1], // Ghost box row 3
-            [3,0,1,1,1,1,0,1,1,1,1,1,1,1,0,1,1,1,1,0,3], // Tunnel row
-            [1,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,1],
-            [1,0,1,1,0,1,1,1,1,0,1,0,1,1,1,1,0,1,1,0,1],
-            [1,0,0,0,0,1,1,0,0,0,3,0,0,0,1,1,0,0,0,0,1], // Player start row
-            [1,1,0,1,0,0,0,0,1,1,1,1,1,0,0,0,0,1,0,1,1],
-            [1,0,0,1,0,1,0,1,1,0,0,0,1,1,0,1,0,1,0,0,1],
-            [1,0,1,1,0,1,0,0,0,0,1,0,0,0,0,1,0,1,1,0,1],
-            [1,2,0,0,0,1,1,1,0,1,1,1,0,1,1,1,0,0,0,2,1],
-            [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
-        ];
-         const map3 = [
-            [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
-            [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-            [1,0,1,1,1,1,0,1,1,1,1,1,1,1,0,1,1,1,1,0,1],
-            [1,0,1,1,1,1,0,1,1,1,1,1,1,1,0,1,1,1,1,0,1],
-            [1,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,1],
-            [1,0,1,1,1,1,0,1,3,3,3,3,3,1,0,1,1,1,1,0,1], // Ghost box row 1
-            [1,0,1,1,1,1,0,1,3,3,3,3,3,1,0,1,1,1,1,0,1], // Ghost box row 2 (start positions)
-            [1,2,0,0,0,0,0,1,3,3,3,3,3,1,0,0,0,0,0,2,1], // Ghost box row 3
-            [1,1,1,1,1,1,0,1,1,1,1,1,1,1,0,1,1,1,1,1,1],
-            [3,3,3,3,3,1,0,0,0,0,0,0,0,0,0,1,3,3,3,3,3], // Tunnel row
-            [1,1,1,1,1,1,0,1,1,1,1,1,1,1,0,1,1,1,1,1,1],
-            [1,2,0,0,0,0,0,1,3,3,3,3,3,1,0,0,0,0,0,2,1],
-            [1,0,1,1,1,1,0,1,3,3,3,3,3,1,0,1,1,1,1,0,1],
-            [1,0,1,1,1,1,0,1,3,3,3,3,3,1,0,1,1,1,1,0,1], // Player start row
-            [1,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,1],
-            [1,0,1,1,1,1,0,1,1,1,1,1,1,1,0,1,1,1,1,0,1],
-            [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-            [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
-        ];
-        
-        const allMaps = [ 
-            { 
-              map: map1, 
-              playerStart: { x: 10, y: 13 }, 
-              ghostStart: [ { x: 10, y: 7, color: '#EF4444', mode: 'direct'}, { x: 9, y: 8, color: '#F472B6', mode: 'ambush'}, { x: 10, y: 8, color: '#22D3EE', mode: 'direct'}, { x: 11, y: 8, color: '#F97316', mode: 'random'} ],
-              ghostBoxExit: { x: 10, y: 6 } // Exit just above the box for map 1
-            },
-            { 
-              map: map2, 
-              playerStart: { x: 10, y: 12 }, 
-              ghostStart: [ { x: 10, y: 7, color: '#EF4444', mode: 'direct'}, { x: 9, y: 8, color: '#F472B6', mode: 'ambush'}, { x: 10, y: 8, color: '#22D3EE', mode: 'direct'}, { x: 11, y: 8, color: '#F97316', mode: 'random'} ],
-              ghostBoxExit: { x: 10, y: 6 } // Same exit logic
-            },
-            { 
-              map: map3, 
-              playerStart: { x: 10, y: 14 }, // Player start different
-              ghostStart: [ { x: 10, y: 6, color: '#EF4444', mode: 'direct'}, { x: 9, y: 7, color: '#F472B6', mode: 'ambush'}, { x: 10, y: 7, color: '#22D3EE', mode: 'direct'}, { x: 11, y: 7, color: '#F97316', mode: 'random'} ],
-              ghostBoxExit: { x: 10, y: 5 } // Exit above the box
-            }
-        ];
-        
-        let currentMapData = allMaps[0]; // Ghadi nbdloha f loadRound
-        let mapWidth = 0; // Ghadi nsetiwah f loadRound
-        let mapHeight = 0; // Ghadi nsetiwah f loadRound
+        const map1 = [[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[1,2,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,2,1],[1,0,1,1,0,1,1,1,1,0,1,0,1,1,1,1,0,1,1,0,1],[1,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,1],[1,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,1],[1,0,1,1,0,1,3,3,3,3,3,3,3,3,3,1,0,1,1,0,1],[1,0,1,1,0,1,3,1,1,1,1,1,1,1,3,1,0,1,1,0,1],[1,0,0,0,0,1,3,1,3,3,3,3,3,1,3,1,0,0,0,0,1],[1,1,1,1,0,1,3,1,3,3,3,3,3,1,3,1,0,1,1,1,1],[3,3,3,1,0,1,3,1,1,1,1,1,1,1,3,1,0,1,3,3,3],[1,1,1,1,0,1,3,3,3,3,3,3,3,3,3,1,0,1,1,1,1],[1,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,1],[1,0,1,1,0,1,1,1,1,0,1,0,1,1,1,1,0,1,1,0,1],[1,0,1,1,0,0,0,0,0,0,3,0,0,0,0,0,0,1,1,0,1],[1,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,1],[1,0,1,1,1,1,0,0,0,0,1,0,0,0,0,1,1,1,1,0,1],[1,2,0,0,0,0,0,1,1,0,1,0,1,1,0,0,0,0,0,2,1],[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]];
+        const map2 = [[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[1,2,0,0,1,1,1,0,0,0,1,0,0,0,1,1,1,0,0,2,1],[1,0,1,0,0,0,0,0,1,0,1,0,1,0,0,0,0,0,1,0,1],[1,0,1,0,1,1,0,1,1,0,0,0,1,1,0,1,1,0,1,0,1],[1,0,0,0,1,1,0,1,1,1,1,1,1,1,0,1,1,0,0,0,1],[1,1,1,0,0,0,0,3,3,3,3,3,3,3,0,0,0,0,1,1,1],[1,0,0,0,1,1,0,1,1,1,1,1,1,1,0,1,1,0,0,0,1],[1,0,1,0,1,1,0,1,3,3,3,3,3,1,0,1,1,0,1,0,1],[1,0,1,0,0,0,0,1,3,3,3,3,3,1,0,0,0,0,1,0,1],[3,0,1,1,1,1,0,1,1,1,1,1,1,1,0,1,1,1,1,0,3],[1,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,1],[1,0,1,1,0,1,1,1,1,0,1,0,1,1,1,1,0,1,1,0,1],[1,0,0,0,0,1,1,0,0,0,3,0,0,0,1,1,0,0,0,0,1],[1,1,0,1,0,0,0,0,1,1,1,1,1,0,0,0,0,1,0,1,1],[1,0,0,1,0,1,0,1,1,0,0,0,1,1,0,1,0,1,0,0,1],[1,0,1,1,0,1,0,0,0,0,1,0,0,0,0,1,0,1,1,0,1],[1,2,0,0,0,1,1,1,0,1,1,1,0,1,1,1,0,0,0,2,1],[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]];
+        const map3 = [[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],[1,0,1,1,1,1,0,1,1,1,1,1,1,1,0,1,1,1,1,0,1],[1,0,1,1,1,1,0,1,1,1,1,1,1,1,0,1,1,1,1,0,1],[1,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,1],[1,0,1,1,1,1,0,1,3,3,3,3,3,1,0,1,1,1,1,0,1],[1,0,1,1,1,1,0,1,3,3,3,3,3,1,0,1,1,1,1,0,1],[1,2,0,0,0,0,0,1,3,3,3,3,3,1,0,0,0,0,0,2,1],[1,1,1,1,1,1,0,1,1,1,1,1,1,1,0,1,1,1,1,1,1],[3,3,3,3,3,1,0,0,0,0,0,0,0,0,0,1,3,3,3,3,3],[1,1,1,1,1,1,0,1,1,1,1,1,1,1,0,1,1,1,1,1,1],[1,2,0,0,0,0,0,1,3,3,3,3,3,1,0,0,0,0,0,2,1],[1,0,1,1,1,1,0,1,3,3,3,3,3,1,0,1,1,1,1,0,1],[1,0,1,1,1,1,0,1,3,3,3,3,3,1,0,1,1,1,1,0,1],[1,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,1],[1,0,1,1,1,1,0,1,1,1,1,1,1,1,0,1,1,1,1,0,1],[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]];
+        const allMaps = [ { map: map1, playerStart: { x: 10, y: 13 }, ghostStart: [ { x: 10, y: 7, color: '#EF4444', mode: 'direct'}, { x: 9, y: 8, color: '#F472B6', mode: 'ambush'}, { x: 10, y: 8, color: '#22D3EE', mode: 'direct'}, { x: 11, y: 8, color: '#F97316', mode: 'random'} ], ghostBoxExit: { x: 10, y: 6 } }, { map: map2, playerStart: { x: 10, y: 12 }, ghostStart: [ { x: 10, y: 7, color: '#EF4444', mode: 'direct'}, { x: 9, y: 8, color: '#F472B6', mode: 'ambush'}, { x: 10, y: 8, color: '#22D3EE', mode: 'direct'}, { x: 11, y: 8, color: '#F97316', mode: 'random'} ], ghostBoxExit: { x: 10, y: 6 } }, { map: map3, playerStart: { x: 10, y: 14 }, ghostStart: [ { x: 10, y: 6, color: '#EF4444', mode: 'direct'}, { x: 9, y: 7, color: '#F472B6', mode: 'ambush'}, { x: 10, y: 7, color: '#22D3EE', mode: 'direct'}, { x: 11, y: 7, color: '#F97316', mode: 'random'} ], ghostBoxExit: { x: 10, y: 5 } } ];
+        let currentMapData = allMaps[0]; 
+        let mapWidth = 0; 
+        let mapHeight = 0; 
 
         // ========= 4. React App Component =========
         function App() {
             // --- Game State ---
             const [gameState, setGameState] = useState('home'); 
-            const [currentRound, setCurrentRound] = useState(1); // ZDNA HADI
+            const [currentRound, setCurrentRound] = useState(1); 
             const [score, setScore] = useState(0);
             const [lives, setLives] = useState(MAX_LIVES);
             const [pelletsRemaining, setPelletsRemaining] = useState(0);
-            const [mapState, setMapState] = useState(null); // Ghadi nsetiwah f loadRound
+            const [mapState, setMapState] = useState(null); 
             
             // --- Player State ---
-            const playerRef = useRef({ 
-                x: 0, y: 0, radius: gridSize / 2 - 2, color: '#FACC15', speed: 1.8,
-                dx: 0, dy: 0, nextDx: 0, nextDy: 0 
-            });
-
+            const playerRef = useRef({ x: 0, y: 0, radius: gridSize / 2 - 2, color: '#FACC15', speed: 1.8, dx: 0, dy: 0, nextDx: 0, nextDy: 0 });
              // --- Ghost State ---
-             const ghostsRef = useRef([]); // Ghadi nsetiwah f loadRound
-             const [ghostStates, setGhostStates] = useState([]); // Ghadi nsetiwah f loadRound
+             const ghostsRef = useRef([]); 
+             const [ghostStates, setGhostStates] = useState([]); 
 
             // --- Farcaster/Wallet State ---
             const [statusMessage, setStatusMessage] = useState('');
@@ -255,9 +172,9 @@
             const canvasRef = useRef(null);
             const animationFrameId = useRef(null); 
 
-            // --- Helper: Check Collision ---
+            // --- Helper: Check Collision (7YDNA L-CHECK DYAL L7ITAN MN HNA) ---
              const checkCollision = useCallback((entity, dx, dy) => {
-                 if (!mapState) return true; // Ila l'map majach, blocki kolchi
+                 // Ghir l-boundaries dyal l-canvas (w nkhliw tunnel)
                  const checkX = entity.x + dx;
                  const checkY = entity.y + dy;
                  const radius = entity.radius;
@@ -265,170 +182,119 @@
                  for (const corner of corners) {
                     const gridX = Math.floor(corner.x / gridSize);
                     const gridY = Math.floor(corner.y / gridSize);
-                    // Tunnel Logic: Check if the gridY corresponds to a known tunnel row for the current map
-                    const tunnelRowY = (allMaps[currentRound - 1]?.map === map1 || allMaps[currentRound - 1]?.map === map2) ? 9 : 
-                                       (allMaps[currentRound - 1]?.map === map3) ? 9 : -1; // Added check for map3 tunnel row (also 9)
-                    
+                    const tunnelRowY = (allMaps[currentRound - 1]?.map === map1 || allMaps[currentRound - 1]?.map === map2) ? 9 : (allMaps[currentRound - 1]?.map === map3) ? 9 : -1;
                     if (gridX < 0 || gridX >= mapWidth || gridY < 0 || gridY >= mapHeight) {
                         if (gridY === tunnelRowY && (gridX < 0 || gridX >= mapWidth)) continue; // Allow tunnel wrapping
-                        return true; 
+                        // BDIL: Ila ma kan f tunnel, ma trje3ch true, khlih ydoz
+                        // return true; 
                     }
-                    if (mapState[gridY]?.[gridX] === 1) return true; 
+                    // 7YDNA L-CHECK DYAL MAPSTATE === 1
+                    // if (mapState[gridY]?.[gridX] === 1) return true; 
                 }
-                return false;
-             }, [mapState, currentRound]); // ZDNA currentRound dependency
+                return false; // Dima false (ma kaynch collision m3a l7it)
+             }, [mapState, currentRound]); 
 
             // --- Game Logic Functions ---
-
-            // NEW FUNCTION: Load Round Data
-            const loadRoundData = useCallback((roundNum) => {
-                 if (roundNum > allMaps.length || roundNum < 1) {
-                    console.error("Invalid round number:", roundNum);
-                    setGameState('home'); // Go back home if invalid round
-                    return;
-                 }
-                 console.log(`Loading data for round ${roundNum}`);
-                 setCurrentRound(roundNum);
-                 currentMapData = allMaps[roundNum - 1]; // Update currentMapData global
-                 mapWidth = currentMapData.map[0].length;
-                 mapHeight = currentMapData.map.length;
-
+            const loadRoundData = useCallback((roundNum) => { /* ... kima kan ... */ 
+                 if (roundNum > allMaps.length || roundNum < 1) { console.error("Invalid round:", roundNum); setGameState('home'); return; }
+                 console.log(`Loading round ${roundNum}`); setCurrentRound(roundNum);
+                 currentMapData = allMaps[roundNum - 1]; mapWidth = currentMapData.map[0].length; mapHeight = currentMapData.map.length;
                  setMapState(JSON.parse(JSON.stringify(currentMapData.map)));
-                 
-                 // Reset Player
-                 playerRef.current.x = currentMapData.playerStart.x * gridSize + gridSize / 2;
-                 playerRef.current.y = currentMapData.playerStart.y * gridSize + gridSize / 2;
+                 playerRef.current.x = currentMapData.playerStart.x * gridSize + gridSize / 2; playerRef.current.y = currentMapData.playerStart.y * gridSize + gridSize / 2;
                  playerRef.current.dx = 0; playerRef.current.dy = 0; playerRef.current.nextDx = 0; playerRef.current.nextDy = 0;
+                 ghostsRef.current = currentMapData.ghostStart.map(g => ({ x: g.x * gridSize + gridSize / 2, y: g.y * gridSize + gridSize / 2, startX: g.x * gridSize + gridSize / 2, startY: g.y * gridSize + gridSize / 2, radius: gridSize / 2 - 2, color: g.color, originalColor: g.color, speed: 1.3, dx: 0, dy: 0, isFrightened: false, frightenedTimer: 0, chaseMode: g.mode, isInBox: true, leaveBoxTimer: Math.random() * 120 + 60 }));
+                 setGhostStates(ghostsRef.current.map(g => ({ id: g.originalColor, isFrightened: g.isFrightened, x: g.x, y: g.y, color: g.color })));
+                 let pCount = 0; currentMapData.map.forEach(r => r.forEach(c => { if (c === 0) pCount++; })); setPelletsRemaining(pCount); console.log("Pellets:", pCount);
+                 if(canvasRef.current) { canvasRef.current.width = mapWidth * gridSize; canvasRef.current.height = mapHeight * gridSize; }
+            }, []); 
 
-                 // Reset Ghosts
-                 ghostsRef.current = currentMapData.ghostStart.map(g => ({
-                    x: g.x * gridSize + gridSize / 2, y: g.y * gridSize + gridSize / 2,
-                    startX: g.x * gridSize + gridSize / 2, startY: g.y * gridSize + gridSize / 2,
-                    radius: gridSize / 2 - 2, color: g.color, originalColor: g.color, speed: 1.3,
-                    dx: 0, dy: 0, isFrightened: false, frightenedTimer: 0, chaseMode: g.mode,
-                    isInBox: true, leaveBoxTimer: Math.random() * 120 + 60 
-                 }));
-                 setGhostStates(ghostsRef.current.map(g => ({ 
-                    id: g.originalColor, isFrightened: g.isFrightened, 
-                    x: g.x, y: g.y, color: g.color
-                 })));
-
-                 // Count pellets for the new map
-                 let pelletCount = 0;
-                 currentMapData.map.forEach(row => row.forEach(cell => { if (cell === 0) pelletCount++; }));
-                 setPelletsRemaining(pelletCount);
-                 console.log("Pellets for this round:", pelletCount);
-
-                 // Set canvas size (important if maps have different dimensions)
-                 if(canvasRef.current) {
-                     canvasRef.current.width = mapWidth * gridSize;
-                     canvasRef.current.height = mapHeight * gridSize;
-                 }
-
-            }, []); // No dependencies, it's a setup function
-
-
+            // BDIL: 7ydna l-check dyal collision qbl ma n bdlo direction
             const updatePlayer = useCallback(() => {
-                if (!canvasRef.current) return; // Ensure canvas exists
+                if (!canvasRef.current) return; 
                 const player = playerRef.current;
-                if (!checkCollision(player, player.nextDx, player.nextDy)) { player.dx = player.nextDx; player.dy = player.nextDy; }
-                if (!checkCollision(player, player.dx, player.dy)) { player.x += player.dx; player.y += player.dy; } 
-                else { player.dx = 0; player.dy = 0; }
                 
-                // Tunnel wrapping logic needs canvas width
+                // BDDEL DIRECTION NICHAN
+                player.dx = player.nextDx; 
+                player.dy = player.nextDy;
+                
+                // T7RK DIMA
+                player.x += player.dx; 
+                player.y += player.dy;
+                
+                // Tunnel wrapping
                 const canvasWidth = canvasRef.current.width;
                 if (player.x < -player.radius) player.x = canvasWidth + player.radius;
                 if (player.x > canvasWidth + player.radius) player.x = -player.radius;
 
-                const gridX = Math.floor(player.x / gridSize);
-                const gridY = Math.floor(player.y / gridSize);
+                // Pellet eating (kima kan)
+                const gridX = Math.floor(player.x / gridSize); const gridY = Math.floor(player.y / gridSize);
                 if (gridX >= 0 && gridX < mapWidth && gridY >= 0 && gridY < mapHeight) {
-                    const cell = mapState?.[gridY]?.[gridX]; // Add null checks
+                    const cell = mapState?.[gridY]?.[gridX]; 
                     if (cell === 0 || cell === 2) { 
-                        setMapState(prevMap => {
-                            if (!prevMap) return null;
-                            const newMap = [...prevMap]; 
-                            newMap[gridY] = [...newMap[gridY]]; 
-                            newMap[gridY][gridX] = 3; 
-                            return newMap;
-                        }); 
+                        setMapState(prevMap => { /* ... */ const newMap = [...prevMap]; newMap[gridY] = [...newMap[gridY]]; newMap[gridY][gridX] = 3; return newMap; }); 
                         if(cell === 0) { setScore(s => s + 10); setPelletsRemaining(p => p - 1); } 
-                        else { 
-                             setScore(s => s + 50);
-                             ghostsRef.current.forEach(g => { g.isFrightened = true; g.frightenedTimer = 300; });
-                             setGhostStates(prev => prev.map(gs => ({...gs, isFrightened: true, color: '#3B82F6'})));
-                        }
+                        else { setScore(s => s + 50); ghostsRef.current.forEach(g => { g.isFrightened = true; g.frightenedTimer = 300; }); setGhostStates(prev => prev.map(gs => ({...gs, isFrightened: true, color: '#3B82F6'}))); }
                     }
                 }
-            }, [checkCollision, mapState]);
+            }, [mapState]); // 7ydna checkCollision mn dependencies
 
+             // BDIL: 7ydna l-check dyal collision f AI w f l-movement
              const updateGhosts = useCallback(() => {
-                if (!canvasRef.current) return; // Ensure canvas exists
+                if (!canvasRef.current) return; 
                 const player = playerRef.current;
                 const ghosts = ghostsRef.current;
                 let ghostStatesChanged = false; 
                 ghosts.forEach(ghost => {
                     let stateNeedsUpdate = false; 
-                    if (ghost.isFrightened) {
-                        ghost.frightenedTimer--;
-                         if (ghost.color !== '#3B82F6') { ghost.color = '#3B82F6'; stateNeedsUpdate = true; }
-                        if (ghost.frightenedTimer <= 0) { ghost.isFrightened = false; ghost.color = ghost.originalColor; stateNeedsUpdate = true; }
-                    } else if (ghost.color !== ghost.originalColor) { ghost.color = ghost.originalColor; stateNeedsUpdate = true; }
-                     if (ghost.isInBox) {
-                        ghost.leaveBoxTimer--;
-                        if (ghost.leaveBoxTimer <= 0) {
-                            ghost.isInBox = false;
-                            // Use exit specific to current map
-                            const exit = allMaps[currentRound - 1].ghostBoxExit; 
-                            ghost.x = exit.x * gridSize + gridSize / 2;
-                            ghost.y = exit.y * gridSize + gridSize / 2;
-                            ghost.dx = 0; ghost.dy = -ghost.speed; 
-                        } else {
-                            if (ghost.x !== ghost.startX || ghost.y !== ghost.startY) { ghost.x = ghost.startX; ghost.y = ghost.startY; stateNeedsUpdate = true; }
-                            return; 
-                        }
-                    }
+                    if (ghost.isFrightened) { /* ... kima kan ... */ ghost.frightenedTimer--; if (ghost.color !== '#3B82F6') { ghost.color = '#3B82F6'; stateNeedsUpdate = true; } if (ghost.frightenedTimer <= 0) { ghost.isFrightened = false; ghost.color = ghost.originalColor; stateNeedsUpdate = true; } } 
+                    else if (ghost.color !== ghost.originalColor) { ghost.color = ghost.originalColor; stateNeedsUpdate = true; }
+                    
+                     if (ghost.isInBox) { /* ... kima kan ... */ ghost.leaveBoxTimer--; if (ghost.leaveBoxTimer <= 0) { ghost.isInBox = false; const exit = allMaps[currentRound - 1].ghostBoxExit; ghost.x = exit.x * gridSize + gridSize / 2; ghost.y = exit.y * gridSize + gridSize / 2; ghost.dx=0; ghost.dy=0; /* 7ydna direction lfoq */ } else { if (ghost.x !== ghost.startX || ghost.y !== ghost.startY) { ghost.x = ghost.startX; ghost.y = ghost.startY; stateNeedsUpdate = true; } return; } }
+                    
+                    // --- AI Logic (7ydna checkCollision) ---
                     const directions = [ { dx: ghost.speed, dy: 0 }, { dx: -ghost.speed, dy: 0 }, { dx: 0, dy: ghost.speed }, { dx: 0, dy: -ghost.speed } ];
                     let bestDir = null;
+
                     if (!ghost.isFrightened) { // CHASE
                         let targetX = player.x; let targetY = player.y;
-                         if (ghost.chaseMode === 'ambush') { 
-                            let playerGridDx = 0; let playerGridDy = 0;
-                            if (player.dx > 0) playerGridDx = 1; if (player.dx < 0) playerGridDx = -1;
-                            if (player.dy > 0) playerGridDy = 1; if (player.dy < 0) playerGridDy = -1;
-                            if(playerGridDx !== 0 || playerGridDy !== 0) { targetX = player.x + (playerGridDx * gridSize * 4); targetY = player.y + (playerGridDy * gridSize * 4); }
-                        } else if (ghost.chaseMode === 'random') { 
-                            const distanceToPlayer = Math.hypot(player.x - ghost.x, player.y - ghost.y);
-                            if (distanceToPlayer < gridSize * 8) { targetX = gridSize; targetY = canvasRef.current.height - gridSize; }
-                        }
+                         if (ghost.chaseMode === 'ambush') { /* ... kima kan ... */ let pDx = 0, pDy = 0; if (player.dx > 0) pDx = 1; if (player.dx < 0) pDx = -1; if (player.dy > 0) pDy = 1; if (player.dy < 0) pDy = -1; if(pDx !== 0 || pDy !== 0) { targetX = player.x + (pDx * gridSize * 4); targetY = player.y + (pDy * gridSize * 4); } } 
+                         else if (ghost.chaseMode === 'random') { /* ... kima kan ... */ const d = Math.hypot(player.x - ghost.x, player.y - ghost.y); if (d < gridSize * 8) { targetX = gridSize; targetY = canvasRef.current.height - gridSize; } }
+                         
                         let minDistance = Infinity;
                         for (const dir of directions) {
                             if ((dir.dx === -ghost.dx && dir.dy === -ghost.dy) && (ghost.dx !== 0 || ghost.dy !== 0)) continue; 
-                            if (!checkCollision(ghost, dir.dx, dir.dy)) {
+                            // 7YD COLLISION CHECK HNA
+                            // if (!checkCollision(ghost, dir.dx, dir.dy)) { 
                                 const newX = ghost.x + dir.dx; const newY = ghost.y + dir.dy;
                                 const distance = Math.hypot(targetX - newX, targetY - newY);
                                 if (distance < minDistance) { minDistance = distance; bestDir = dir; }
-                            }
+                            // }
                         }
                     } else { // FLEE
                         let maxDistance = -1;
                         for (const dir of directions) {
                            if ((dir.dx === -ghost.dx && dir.dy === -ghost.dy) && (ghost.dx !== 0 || ghost.dy !== 0)) continue; 
-                           if (!checkCollision(ghost, dir.dx, dir.dy)) {
+                           // 7YD COLLISION CHECK HNA
+                           // if (!checkCollision(ghost, dir.dx, dir.dy)) {
                                 const newX = ghost.x + dir.dx; const newY = ghost.y + dir.dy;
                                 const distance = Math.hypot(player.x - newX, player.y - newY);
                                 if (distance > maxDistance) { maxDistance = distance; bestDir = dir; }
-                            }
+                           // }
                         }
                     }
+
                      let moved = false;
                      if (bestDir) { ghost.dx = bestDir.dx; ghost.dy = bestDir.dy; } 
-                     else { if (!checkCollision(ghost, -ghost.dx, -ghost.dy)) { ghost.dx = -ghost.dx; ghost.dy = -ghost.dy; } 
-                            else { ghost.dx = 0; ghost.dy = 0; } }
-                     if (!checkCollision(ghost, ghost.dx, ghost.dy)) { ghost.x += ghost.dx; ghost.y += ghost.dy; moved = true; } 
-                     else { ghost.dx = 0; ghost.dy = 0; }
+                     else { // Mbloki (impossible db), wla ma 3ndo fin ymchi
+                        ghost.dx = 0; ghost.dy = 0; 
+                     }
+
+                     // T7RK DIMA
+                     ghost.x += ghost.dx; 
+                     ghost.y += ghost.dy; 
+                     moved = true; 
                      
-                    // Tunnel wrapping needs canvas width
+                    // Tunnel wrapping (kima kan)
                     const canvasWidth = canvasRef.current.width;
                     if (ghost.x < -ghost.radius) ghost.x = canvasWidth + ghost.radius;
                     if (ghost.x > canvasWidth + ghost.radius) ghost.x = -ghost.radius;
@@ -438,345 +304,134 @@
                  if (ghostStatesChanged) {
                     setGhostStates(ghostsRef.current.map(g => ({ id: g.originalColor, isFrightened: g.isFrightened, x: g.x, y: g.y, color: g.color })));
                  }
-            }, [checkCollision, currentRound]); // ZDNA currentRound dependency
+            }, [currentRound]); // 7ydna checkCollision mn dependencies
 
-            const checkGhostPlayerCollision = useCallback(() => {
-                const player = playerRef.current;
-                const ghosts = ghostsRef.current;
-                let livesLost = 0;
-                let ghostsEaten = []; 
-                for (let i = 0; i < ghosts.length; i++) {
-                    const ghost = ghosts[i];
-                     if (ghost.isInBox) continue; 
-                    const distance = Math.hypot(player.x - ghost.x, player.y - ghost.y);
-                    if (distance < player.radius + ghost.radius) {
-                        if (ghost.isFrightened) { setScore(s => s + 200); ghostsEaten.push(i); } 
-                        else { livesLost++; break; }
-                    }
-                }
-                if(ghostsEaten.length > 0) {
-                     ghostsEaten.forEach(index => {
-                        const ghost = ghostsRef.current[index];
-                        ghost.x = ghost.startX; ghost.y = ghost.startY;
-                        ghost.isFrightened = false; ghost.color = ghost.originalColor;
-                        ghost.isInBox = true; ghost.leaveBoxTimer = 180; 
-                     });
-                     setGhostStates(prev => prev.map((gs, index) => ghostsEaten.includes(index) ? {...gs, x: ghostsRef.current[index].x, y: ghostsRef.current[index].y, isFrightened: false, color: ghostsRef.current[index].originalColor} : gs));
-                }
-                if (livesLost > 0) {
-                    setLives(l => l - livesLost); // Update lives state
-                    setGameState('paused'); 
-                     // Check lives *after* updating state
-                     setTimeout(() => {
-                         // Read the potentially updated 'lives' state here indirectly
-                         // It's safer to rely on the value *before* the decrement for the check
-                         if (lives - livesLost <= 0) { 
-                            setGameState('gameover'); 
-                         } else { 
-                             resetPositionsAfterDeath(); 
-                             setGameState('playing'); 
-                         }
-                     }, 1500);
-                }
-            }, [lives]); // Depend on lives
+            const checkGhostPlayerCollision = useCallback(() => { /* ... kima kan ... */ 
+                const player = playerRef.current; const ghosts = ghostsRef.current; let livesLost = 0; let ghostsEaten = []; 
+                for (let i = 0; i < ghosts.length; i++) { const ghost = ghosts[i]; if (ghost.isInBox) continue; const d = Math.hypot(player.x - ghost.x, player.y - ghost.y); if (d < player.radius + ghost.radius) { if (ghost.isFrightened) { setScore(s => s + 200); ghostsEaten.push(i); } else { livesLost++; break; } } }
+                if(ghostsEaten.length > 0) { ghostsEaten.forEach(i => { const g = ghostsRef.current[i]; g.x = g.startX; g.y = g.startY; g.isFrightened = false; g.color = g.originalColor; g.isInBox = true; g.leaveBoxTimer = 180; }); setGhostStates(p => p.map((gs, i) => ghostsEaten.includes(i) ? {...gs, x: ghostsRef.current[i].x, y: ghostsRef.current[i].y, isFrightened: false, color: ghostsRef.current[i].originalColor} : gs)); }
+                if (livesLost > 0) { setLives(l => l - livesLost); setGameState('paused'); setTimeout(() => { if (lives - livesLost <= 0) { setGameState('gameover'); } else { resetPositionsAfterDeath(); setGameState('playing'); } }, 1500); }
+             }, [lives]); 
 
-            const resetPositionsAfterDeath = useCallback(() => {
-                 // Use currentRound to get the correct start positions
-                 const mapDataForReset = allMaps[currentRound - 1]; 
-                 playerRef.current.x = mapDataForReset.playerStart.x * gridSize + gridSize / 2;
-                 playerRef.current.y = mapDataForReset.playerStart.y * gridSize + gridSize / 2;
-                 playerRef.current.dx = 0; playerRef.current.dy = 0; playerRef.current.nextDx = 0; playerRef.current.nextDy = 0;
-                 ghostsRef.current.forEach((ghost, index) => {
-                    // Use the correct start positions for the current round
-                    const startPos = mapDataForReset.ghostStart[index]; 
-                    ghost.x = startPos.x * gridSize + gridSize / 2; 
-                    ghost.y = startPos.y * gridSize + gridSize / 2; 
-                    // Update startX/startY as well in case reset is called multiple times
-                    ghost.startX = ghost.x; 
-                    ghost.startY = ghost.y;
-                    ghost.dx = 0; ghost.dy = 0;
-                    ghost.isFrightened = false; ghost.color = ghost.originalColor;
-                    ghost.isInBox = true; ghost.leaveBoxTimer = Math.random() * 120 + 60; 
-                });
-                setGhostStates(ghostsRef.current.map(g => ({ id: g.originalColor, isFrightened: false, x: g.x, y: g.y, color: g.color })));
-            }, [currentRound]); // Depend on currentRound
+            const resetPositionsAfterDeath = useCallback(() => { /* ... kima kan ... */ 
+                 const mapDataForReset = allMaps[currentRound - 1]; playerRef.current.x = mapDataForReset.playerStart.x * gridSize + gridSize / 2; playerRef.current.y = mapDataForReset.playerStart.y * gridSize + gridSize / 2; playerRef.current.dx = 0; playerRef.current.dy = 0; playerRef.current.nextDx = 0; playerRef.current.nextDy = 0;
+                 ghostsRef.current.forEach((g, i) => { const s = mapDataForReset.ghostStart[i]; g.x = s.x * gridSize + gridSize / 2; g.y = s.y * gridSize + gridSize / 2; g.startX = g.x; g.startY = g.y; g.dx = 0; g.dy = 0; g.isFrightened = false; g.color = g.originalColor; g.isInBox = true; g.leaveBoxTimer = Math.random() * 120 + 60; });
+                 setGhostStates(ghostsRef.current.map(g => ({ id: g.originalColor, isFrightened: false, x: g.x, y: g.y, color: g.color })));
+            }, [currentRound]); 
 
-            // MODIFIED CHECK WIN: Handles multiple rounds
-            const checkWinCondition = useCallback(() => {
-                if (pelletsRemaining <= 0 && gameState === 'playing') {
-                    console.log(`Round ${currentRound} cleared!`);
-                    if (currentRound < allMaps.length) {
-                        setGameState('round_won'); // Ghadi n triggeriw l modal dyal "Next Round"
-                    } else {
-                        setGameState('gamewon'); // Sala l match kaml
-                    }
-                }
+            const checkWinCondition = useCallback(() => { /* ... kima kan ... */ 
+                if (pelletsRemaining <= 0 && gameState === 'playing') { console.log(`Round ${currentRound} cleared!`); if (currentRound < allMaps.length) { setGameState('round_won'); } else { setGameState('gamewon'); } }
             }, [pelletsRemaining, gameState, currentRound]);
 
              // --- Drawing Functions ---
-             const drawMap = useCallback((ctx) => {
-                 if (!mapState) return; // Add null check
-                 let pelletCount = 0;
-                 for (let y = 0; y < mapHeight; y++) {
-                    for (let x = 0; x < mapWidth; x++) {
-                        const cell = mapState?.[y]?.[x]; // Add null check
-                        if (cell === 1) { ctx.fillStyle = '#1D4ED8'; ctx.fillRect(x * gridSize, y * gridSize, gridSize + 0.5, gridSize + 0.5); } 
-                        else if (cell === 0 || cell === 2) { 
-                             ctx.beginPath(); const radius = (cell === 0) ? 3 : 6;
-                             ctx.arc(x * gridSize + gridSize / 2, y * gridSize + gridSize / 2, radius, 0, Math.PI * 2);
-                             ctx.fillStyle = '#FDE68A'; ctx.fill(); ctx.closePath();
-                             if (cell === 0) pelletCount++;
-                        }
-                    }
-                 }
-                 setPelletsRemaining(currentCount => currentCount !== pelletCount ? pelletCount : currentCount);
+             const drawMap = useCallback((ctx) => { /* ... kima kan ... */ 
+                 if (!mapState) return; let pCount = 0;
+                 for (let y = 0; y < mapHeight; y++) { for (let x = 0; x < mapWidth; x++) { const c = mapState?.[y]?.[x]; if (c === 1) { ctx.fillStyle = '#1D4ED8'; ctx.fillRect(x * gridSize, y * gridSize, gridSize + 0.5, gridSize + 0.5); } else if (c === 0 || c === 2) { ctx.beginPath(); const r = (c === 0) ? 3 : 6; ctx.arc(x * gridSize + gridSize / 2, y * gridSize + gridSize / 2, r, 0, Math.PI * 2); ctx.fillStyle = '#FDE68A'; ctx.fill(); ctx.closePath(); if (c === 0) pCount++; } } }
+                 setPelletsRemaining(cc => cc !== pCount ? pCount : cc);
              }, [mapState]); 
 
-             const drawPlayer = useCallback((ctx) => {
-                 const player = playerRef.current;
-                 ctx.beginPath();
-                 // Simple circle for now
-                 ctx.arc(player.x, player.y, player.radius, 0, Math.PI * 2); 
-                 // ctx.arc(player.x, player.y, player.radius, 0.2 * Math.PI, 1.8 * Math.PI); 
-                 // ctx.lineTo(player.x, player.y); 
-                 ctx.closePath();
-                 ctx.fillStyle = player.color;
-                 ctx.fill();
+             const drawPlayer = useCallback((ctx) => { /* ... kima kan ... */ 
+                 const p = playerRef.current; ctx.beginPath(); ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2); ctx.closePath(); ctx.fillStyle = p.color; ctx.fill();
              }, []); 
 
-             const drawGhosts = useCallback((ctx) => {
-                 ghostStates.forEach(ghost => { // Draw simple circles
-                    ctx.beginPath();
-                    ctx.arc(ghost.x, ghost.y, gridSize / 2 - 2, 0, Math.PI * 2); 
-                    ctx.fillStyle = ghost.color;
-                    ctx.fill();
-                    ctx.closePath();
-                 });
+             const drawGhosts = useCallback((ctx) => { /* ... kima kan (circles) ... */ 
+                 ghostStates.forEach(g => { ctx.beginPath(); ctx.arc(g.x, g.y, gridSize / 2 - 2, 0, Math.PI * 2); ctx.fillStyle = g.color; ctx.fill(); ctx.closePath(); });
              }, [ghostStates]); 
 
 
             // --- Game Loop ---
-            const gameLoop = useCallback(() => {
-                // IMPORTANT: Removed gameState check from here, loop runs even if paused for modal
-                // Check moved inside requestAnimationFrame callback
-                
-                const canvas = canvasRef.current;
-                if (!canvas) return; 
-                const ctx = canvas.getContext('2d');
-                ctx.clearRect(0, 0, canvas.width, canvas.height); 
-
-                // Only update if playing
-                if (gameState === 'playing') {
-                    updatePlayer(); 
-                    updateGhosts(); 
-                    checkGhostPlayerCollision(); 
-                    checkWinCondition(); 
-                }
-
+            const gameLoop = useCallback(() => { /* ... kima kan ... */ 
+                const canvas = canvasRef.current; if (!canvas) return; const ctx = canvas.getContext('2d'); ctx.clearRect(0, 0, canvas.width, canvas.height); 
+                if (gameState === 'playing') { updatePlayer(); updateGhosts(); checkGhostPlayerCollision(); checkWinCondition(); }
                 drawMap(ctx); drawGhosts(ctx); drawPlayer(ctx); 
-                
-                // Continue loop ONLY if not ended
-                if (gameState === 'playing' || gameState === 'paused') {
-                   animationFrameId.current = requestAnimationFrame(gameLoop);
-                } else {
-                     console.log("Game loop stopping due to end state:", gameState);
-                }
-
+                if (gameState === 'playing' || gameState === 'paused') { animationFrameId.current = requestAnimationFrame(gameLoop); } 
+                else { console.log("Loop stopping:", gameState); }
             }, [gameState, updatePlayer, updateGhosts, checkGhostPlayerCollision, checkWinCondition, drawMap, drawPlayer, drawGhosts]); 
 
 
             // --- Effects ---
-            useEffect(() => {
-                 // Start loop when component mounts or gameState becomes 'playing'
-                 // Stop when it's not 'playing' or 'paused'
-                if (gameState === 'playing' || gameState === 'paused') { 
-                    console.log("Starting/Resuming game loop for state:", gameState);
-                    animationFrameId.current = requestAnimationFrame(gameLoop);
-                } else {
-                    console.log("Stopping game loop for state:", gameState);
-                    cancelAnimationFrame(animationFrameId.current);
-                }
-                return () => { // Cleanup on unmount or before next effect run
-                    console.log("Cleaning up animation frame");
-                    cancelAnimationFrame(animationFrameId.current);
-                }
+            useEffect(() => { /* ... kima kan ... */ 
+                if (gameState === 'playing' || gameState === 'paused') { console.log("Starting/Resuming loop:", gameState); animationFrameId.current = requestAnimationFrame(gameLoop); } 
+                else { console.log("Stopping loop:", gameState); cancelAnimationFrame(animationFrameId.current); }
+                return () => { console.log("Cleaning up frame"); cancelAnimationFrame(animationFrameId.current); }
             }, [gameState, gameLoop]); 
 
-            useEffect(() => {
-                const handleKeyDown = (e) => {
-                    if (gameState !== 'playing') return; 
-                    if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.key)) e.preventDefault();
-                    const player = playerRef.current;
-                    switch (e.key) {
-                        case 'ArrowUp':    player.nextDx = 0; player.nextDy = -player.speed; break;
-                        case 'ArrowDown':  player.nextDx = 0; player.nextDy = player.speed; break;
-                        case 'ArrowLeft':  player.nextDx = -player.speed; player.nextDy = 0; break;
-                        case 'ArrowRight': player.nextDx = player.speed; player.nextDy = 0; break;
-                    }
-                };
-                const canvas = canvasRef.current;
-                // Add listener only when canvas exists
-                if(canvas) { 
-                     // Ensure canvas is focusable when game starts/restarts
-                     if (gameState === 'playing') {
-                         canvas.setAttribute('tabindex', '0'); 
-                         canvas.focus();
-                     }
-                     window.addEventListener('keydown', handleKeyDown);
-                     console.log("Keydown listener attached");
-                }
-                return () => {
-                    window.removeEventListener('keydown', handleKeyDown);
-                    console.log("Keydown listener removed");
-                }
-            }, [gameState]); // Rerun when gameState changes to manage focus/listener
+            useEffect(() => { /* ... kima kan ... */ 
+                const handleKeyDown = (e) => { if (gameState !== 'playing') return; if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.key)) e.preventDefault(); const p = playerRef.current; switch (e.key) { case 'ArrowUp': p.nextDx = 0; p.nextDy = -p.speed; break; case 'ArrowDown': p.nextDx = 0; p.nextDy = p.speed; break; case 'ArrowLeft': p.nextDx = -p.speed; p.nextDy = 0; break; case 'ArrowRight': p.nextDx = p.speed; p.nextDy = 0; break; } };
+                const canvas = canvasRef.current; if(canvas) { if (gameState === 'playing') { canvas.setAttribute('tabindex', '0'); canvas.focus(); } window.addEventListener('keydown', handleKeyDown); console.log("Keydown listener attached"); }
+                return () => { window.removeEventListener('keydown', handleKeyDown); console.log("Keydown listener removed"); }
+            }, [gameState]); 
 
-            // Effect l load round 1 f l'wl
-             useEffect(() => {
-                 console.log("Initial load effect: Loading round 1");
-                 loadRoundData(1); // Load map 1 data on initial mount
-             }, [loadRoundData]); // Depend on loadRoundData
+            useEffect(() => { /* ... kima kan ... */ 
+                if (lives <= 0 && gameState === 'playing') { console.log("Game Over condition met"); setGameState('gameover'); }
+            }, [lives, gameState]);
+
+             useEffect(() => { /* ... kima kan ... */ 
+                 console.log("Initial load: Loading round 1"); loadRoundData(1); 
+             }, [loadRoundData]); 
 
 
             // --- Wallet/Payment Functions ---
              const handleConnectWallet = async () => { /* ... kima kan ... */ 
                 setIsProcessing(true); setStatusMessage('1/3: Locating provider...'); console.log("Connecting...");
-                try {
-                  const provider = await getProvider();
-                  if (!provider) throw new Error('No provider. Use Farcaster client or wallet extension.');
-                  setStatusMessage('2/3: Requesting accounts...'); console.log("Requesting accounts...");
-                  const accounts = await provider.request({ method: 'eth_requestAccounts' });
-                  if (accounts && accounts.length > 0) {
-                      const addr = accounts[0]; setUserAddress(addr); console.log("Account:", addr);
-                      setStatusMessage('3/3: Getting user data...'); console.log("Getting user data...");
-                      try {
-                          // Try to get FID using the imported sdk object
-                          if (sdk && typeof sdk.getUserData === 'function') { 
-                              const user = await sdk.getUserData();
-                              if (user && user.fid) { setFid(user.fid); setStatusMessage(`✅ Connected! FID: ${user.fid}`); console.log("User:", user); } 
-                              else { setFid(null); setStatusMessage(`✅ Connected: ${addr.slice(0,6)}...`); console.log("FID not available."); }
-                          } else { setFid(null); setStatusMessage(`✅ Connected: ${addr.slice(0,6)}...`); console.log("sdk.getUserData unavailable."); }
-                      } catch (fidError) { setFid(null); setStatusMessage(`✅ Connected: ${addr.slice(0,6)}...`); console.warn("FID error:", fidError); }
-                  } else throw new Error('No accounts returned.');
-                } catch (e) { console.error('Connect error:', e); setUserAddress(null); setFid(null); setStatusMessage(`❌ Error: ${e.message}`); }
-                setIsProcessing(false);
+                try { const p = await getProvider(); if (!p) throw new Error('No provider. Use Farcaster client or wallet extension.'); setStatusMessage('2/3: Requesting accounts...'); console.log("Requesting accounts..."); const accs = await p.request({ method: 'eth_requestAccounts' }); if (accs && accs.length > 0) { const addr = accs[0]; setUserAddress(addr); console.log("Account:", addr); setStatusMessage('3/3: Getting user data...'); console.log("Getting user data..."); try { if (sdk && typeof sdk.getUserData === 'function') { const user = await sdk.getUserData(); if (user && user.fid) { setFid(user.fid); setStatusMessage(`✅ Connected! FID: ${user.fid}`); console.log("User:", user); } else { setFid(null); setStatusMessage(`✅ Connected: ${addr.slice(0,6)}...`); console.log("FID unavailable."); } } else { setFid(null); setStatusMessage(`✅ Connected: ${addr.slice(0,6)}...`); console.log("sdk.getUserData unavailable."); } } catch (fidErr) { setFid(null); setStatusMessage(`✅ Connected: ${addr.slice(0,6)}...`); console.warn("FID error:", fidErr); } } else throw new Error('No accounts returned.'); } catch (e) { console.error('Connect error:', e); setUserAddress(null); setFid(null); setStatusMessage(`❌ Error: ${e.message}`); } setIsProcessing(false);
              };
-
-             // MODIFIED: Starts round 1 only
-             const handlePayAndStart = async () => {
-                if (!userAddress) { setStatusMessage('Please connect wallet first.'); return; }
-                if (DEVELOPER_WALLET === '0xYourWalletAddressHere' || !DEVELOPER_WALLET.startsWith('0x')) { setStatusMessage('⚠️ Dev: Set valid wallet address!'); return; }
-                setIsProcessing(true); setStatusMessage('1/3: Locating provider...'); console.log("Starting Match...");
-                try {
-                  const provider = await getProvider();
-                  if (!provider) throw new Error('No provider found.');
-                  setStatusMessage('2/3: Sending payment...'); console.log("Sending payment...");
-                  const hash = await provider.request({ method: 'eth_sendTransaction', params: [{ from: userAddress, to: DEVELOPER_WALLET, value: parseEther(GAME_FEE_ETH) }] });
-                  setStatusMessage('✅ Payment complete! Starting Round 1...'); console.log("TX Hash:", hash);
-                  
-                  // Reset score/lives for a new match
-                  setScore(0); 
-                  setLives(MAX_LIVES); 
-                  
-                  // Load round 1 data
-                  loadRoundData(1); 
-
-                  setTimeout(() => { 
-                      setGameState('playing'); // Start the game loop
-                      setIsProcessing(false); 
-                      setStatusMessage(''); 
-                      if(canvasRef.current) canvasRef.current.focus(); 
-                  }, 1000); 
-                } catch (e) { console.error('Start error:', e); setStatusMessage(`❌ Failed: ${e.message.split('.')[0]}.`); setIsProcessing(false); }
+             const handlePayAndStart = async () => { /* ... kima kan ... */ 
+                if (!userAddress) { setStatusMessage('Please connect wallet first.'); return; } if (DEVELOPER_WALLET === '0xYourWalletAddressHere' || !DEVELOPER_WALLET.startsWith('0x')) { setStatusMessage('⚠️ Dev: Set valid wallet address!'); return; } setIsProcessing(true); setStatusMessage('1/3: Locating provider...'); console.log("Starting Match...");
+                try { const p = await getProvider(); if (!p) throw new Error('No provider.'); setStatusMessage('2/3: Sending payment...'); console.log("Sending payment..."); const h = await p.request({ method: 'eth_sendTransaction', params: [{ from: userAddress, to: DEVELOPER_WALLET, value: parseEther(GAME_FEE_ETH) }] }); setStatusMessage('✅ Payment complete! Starting Round 1...'); console.log("TX Hash:", h); setScore(0); setLives(MAX_LIVES); loadRoundData(1); setTimeout(() => { setGameState('playing'); setIsProcessing(false); setStatusMessage(''); if(canvasRef.current) canvasRef.current.focus(); }, 1000); } catch (e) { console.error('Start error:', e); setStatusMessage(`❌ Failed: ${e.message.split('.')[0]}.`); setIsProcessing(false); }
              };
-
-             // NEW FUNCTION: Handle "Next Round" button
-             const handleNextRound = () => {
-                  console.log(`Starting next round: ${currentRound + 1}`);
-                  loadRoundData(currentRound + 1); // Load next round's data
-                  setGameState('playing'); // Resume game loop
-                  if(canvasRef.current) canvasRef.current.focus(); 
+             const handleNextRound = () => { /* ... kima kan ... */ 
+                  console.log(`Starting round: ${currentRound + 1}`); loadRoundData(currentRound + 1); setGameState('playing'); if(canvasRef.current) canvasRef.current.focus(); 
              };
 
 
             // --- UI Rendering ---
-            if (gameState === 'home') {
+            if (gameState === 'home') { /* ... kima kan ... */ 
                 const isWalletConnected = !!userAddress;
-                 return createElement('div', { 
-                        className: "min-h-screen flex flex-col items-center justify-center p-4 text-center relative home-overlay", 
-                        style: { backgroundImage: `url('image_e58548.png')`, backgroundSize: 'cover', backgroundPosition: 'center', backgroundRepeat: 'no-repeat' }
-                    }, 
+                 return createElement('div', { className: "min-h-screen flex flex-col items-center justify-center p-4 text-center relative home-overlay", style: { backgroundImage: `url('image_e58548.png')`, backgroundSize: 'cover', backgroundPosition: 'center', backgroundRepeat: 'no-repeat' } }, 
                     createElement('div', {className: "home-content w-full max-w-xs"}, 
                         createElement('h1', { className: "text-5xl font-bold arcade-header tracking-tight mb-4" }, "Pixel Muncher"),
-                        createElement('h2', { className: "text-xl text-cyan-300 mb-8" }, ""), // Khawia
+                        createElement('h2', { className: "text-xl text-cyan-300 mb-8" }, ""), 
                         createElement('div', { className: "flex flex-col gap-4 w-full" },
-                            createElement('button', {
-                               onClick: handleConnectWallet, disabled: isProcessing || isWalletConnected,
-                               className: "secondary-button w-full disabled:opacity-50 disabled:cursor-not-allowed"
-                            }, isWalletConnected ? `✅ Connected: ${userAddress.slice(0,6)}...` : 'Connect Wallet'),
-                            // MODIFIED: Changed function call to handlePayAndStart
-                            createElement('button', {
-                               onClick: handlePayAndStart, disabled: !isWalletConnected || isProcessing,
-                               className: "primary-button w-full disabled:opacity-50 disabled:cursor-not-allowed"
-                            }, isProcessing ? statusMessage : `Pay ${GAME_FEE_ETH} ETH & Play`),
+                            createElement('button', { onClick: handleConnectWallet, disabled: isProcessing || isWalletConnected, className: "secondary-button w-full disabled:opacity-50 disabled:cursor-not-allowed" }, isWalletConnected ? `✅ Connected: ${userAddress.slice(0,6)}...` : 'Connect Wallet'),
+                            createElement('button', { onClick: handlePayAndStart, disabled: !isWalletConnected || isProcessing, className: "primary-button w-full disabled:opacity-50 disabled:cursor-not-allowed" }, isProcessing ? statusMessage : `Pay ${GAME_FEE_ETH} ETH & Play`),
                         ),
-                        statusMessage && !isProcessing && createElement('div', {
-                            className: `mt-6 p-3 rounded-lg font-semibold text-sm w-full ${ 
-                            statusMessage.includes('Error') || statusMessage.includes('failed') || statusMessage.includes('⚠️') || statusMessage.includes('❌') ? 'bg-red-500/80' : 
-                            statusMessage.includes('✅') ? 'bg-green-500/80' : 'bg-blue-500/80'}`
-                        }, statusMessage)
+                        statusMessage && !isProcessing && createElement('div', { className: `mt-6 p-3 rounded-lg font-semibold text-sm w-full ${ statusMessage.includes('Error') || statusMessage.includes('failed') || statusMessage.includes('⚠️') || statusMessage.includes('❌') ? 'bg-red-500/80' : statusMessage.includes('✅') ? 'bg-green-500/80' : 'bg-blue-500/80'}` }, statusMessage)
                     ) 
                  );
             }
 
-            // MODIFIED: Added separate modal for round_won
-            if (gameState === 'round_won') {
+            if (gameState === 'round_won') { /* ... kima kan ... */ 
                  return createElement('div', { id:"roundWonModal", className: "modal", style: { display: 'flex' } }, 
                      createElement('div', { className: "modal-content" },
                          createElement('h2', { className: "text-3xl font-bold mb-4 text-green-400" }, `Round ${currentRound} Complete!`),
                          createElement('p', { className: "text-lg mb-6" }, `Current Score: ${score}`),
-                         createElement('button', { 
-                             id:"nextRoundButton", 
-                             onClick: handleNextRound, // N-call-iw l-function l-jdida
-                             className: "secondary-button w-full" // Button khdr db
-                         }, `Start Round ${currentRound + 1}`)
+                         createElement('button', { id:"nextRoundButton", onClick: handleNextRound, className: "secondary-button w-full" }, `Start Round ${currentRound + 1}`)
                      )
                  );
             }
 
-            if (gameState === 'gameover' || gameState === 'gamewon') {
+            if (gameState === 'gameover' || gameState === 'gamewon') { /* ... kima kan ... */ 
                  return createElement('div', { id:"gameEndModal", className: "modal", style: { display: 'flex' } }, 
                      createElement('div', { className: "modal-content" },
                          createElement('h2', { id: "modalTitle", className: "text-3xl font-bold mb-4" }, gameState === 'gamewon' ? '🎉 You Won the Match! 🎉' : 'Game Over!'),
                          createElement('p', { id:"modalScore", className: "text-lg mb-6" }, `Final Score: ${score}`),
-                         createElement('button', { 
-                             id:"restartButton", 
-                             onClick: handlePayAndStart, // N-call-iw l-function dyal restart kaml
-                             disabled: isProcessing, 
-                             className: "primary-button w-full" 
-                         }, isProcessing ? statusMessage : `Pay ${GAME_FEE_ETH} ETH & Play Again`)
+                         createElement('button', { id:"restartButton", onClick: handlePayAndStart, disabled: isProcessing, className: "primary-button w-full" }, isProcessing ? statusMessage : `Pay ${GAME_FEE_ETH} ETH & Play Again`)
                      )
                  );
             }
 
-            // Playing State UI (ZDNA ROUND NUMBER)
+            // Playing State UI 
             return createElement('div', { className: "flex flex-col items-center w-full max-w-[420px]" }, 
                 createElement('header', { className: "text-center mb-2" },
                    createElement('h1', { className: "text-3xl font-bold arcade-header tracking-tight" }, "Pixel Muncher")
                 ),
-                // ZDNA ROUND NUMBER HNA
                 createElement('div', { className: "flex justify-between w-full text-lg mb-2 px-1" },
                     createElement('div', { className: "font-semibold" }, 'Score: ', createElement('span', { id: "score", className: "text-yellow-400" }, score)),
-                    createElement('div', { className: "font-semibold" }, 'Round: ', createElement('span', { id: "round", className: "text-green-400" }, currentRound)), // HNA ZDNAH
+                    createElement('div', { className: "font-semibold" }, 'Round: ', createElement('span', { id: "round", className: "text-green-400" }, currentRound)), 
                     createElement('div', { className: "font-semibold" }, 'Lives: ', createElement('span', { id: "lives", className: "text-red-500" }, lives))
                 ),
-                // Canvas needs specific dimensions based on loaded map
-                 createElement('canvas', { 
-                    ref: canvasRef, 
-                    id: "gameCanvas", 
-                    width: mapWidth * gridSize, 
-                    height: mapHeight * gridSize 
-                }),
+                 createElement('canvas', { ref: canvasRef, id: "gameCanvas", width: mapWidth * gridSize, height: mapHeight * gridSize }),
                 createElement('div', { className: "mt-3 text-center text-sm text-gray-400" },
                   createElement('p', null, 'Use ', createElement('span', {className: "text-yellow-400 font-bold"}, 'Arrow Keys'), ' to move.')
                 )
