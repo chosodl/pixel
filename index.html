@@ -115,7 +115,10 @@
         console.log("Farcaster SDK ready() called immediately.");
 
         // ========= 2. React Setup & Helpers =========
-        const { useState, useEffect, createElement, useRef, useCallback } = React;
+        // Access React/ReactDOM via window object inside module
+        const { useState, useEffect, createElement, useRef, useCallback } = window.React; 
+        // FIX: Access ReactDOM via window object
+        const ReactDOM = window.ReactDOM; 
 
         function parseEther(x) {
             const [w, f = ""] = String(x).split('.');
@@ -137,74 +140,11 @@
         const DEVELOPER_WALLET = '0x0e315015a4ee8d5d6c4b43e300df76b965d55bdd'; 
         const MAX_LIVES = 3;
 
-        // --- Maps Data (BDDLNA CHI 7ITAN L 0/3) ---
-        // Maze layout: 1 = Wall, 0 = Pellet, 2 = Power Pellet, 3 = Empty
-        const map1 = [ // Map 1: Ft7na chwiya dyal triqan 7da l box
-            [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
-            [1,2,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,2,1],
-            [1,0,1,1,0,1,1,1,1,0,1,0,1,1,1,1,0,1,1,0,1],
-            [1,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,1],
-            [1,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,1],
-            [1,0,1,1,0,1,3,3,3,3,3,3,3,3,3,1,0,1,1,0,1],
-            [1,0,1,1,0,0,3,1,1,1,1,1,1,1,3,0,0,1,1,0,1], // Changed 1s to 0s/3s near exit
-            [1,0,0,0,0,1,3,1,3,3,3,3,3,1,3,1,0,0,0,0,1], 
-            [1,1,1,1,0,1,3,1,3,3,3,3,3,1,3,1,0,1,1,1,1], 
-            [3,3,3,1,0,1,3,0,0,0,0,0,0,0,3,1,0,1,3,3,3], // Tunnel row, opened path below box
-            [1,1,1,1,0,1,3,3,3,3,3,3,3,3,3,1,0,1,1,1,1],
-            [1,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,1],
-            [1,0,1,1,0,1,1,1,1,0,1,0,1,1,1,1,0,1,1,0,1],
-            [1,0,1,1,0,0,0,0,0,0,3,0,0,0,0,0,0,1,1,0,1], 
-            [1,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,1],
-            [1,0,1,1,1,1,0,0,0,0,1,0,0,0,0,1,1,1,1,0,1],
-            [1,2,0,0,0,0,0,1,1,0,1,0,1,1,0,0,0,0,0,2,1],
-            [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
-        ];
-         const map2 = [ // Map 2: Ft7na triqan f l wst w lfoq
-            [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
-            [1,2,0,0,1,1,1,0,0,0,1,0,0,0,1,1,1,0,0,2,1],
-            [1,0,1,0,0,0,0,0,1,0,1,0,1,0,0,0,0,0,1,0,1],
-            [1,0,1,0,1,1,0,1,1,0,0,0,1,1,0,1,1,0,1,0,1],
-            [1,0,0,0,1,1,0,1,1,1,0,1,1,1,0,1,1,0,0,0,1], // Opened center top
-            [1,1,1,0,0,0,0,3,3,3,3,3,3,3,0,0,0,0,1,1,1],
-            [1,0,0,0,1,1,0,0,1,1,1,1,1,0,0,1,1,0,0,0,1], // Opened near box
-            [1,0,1,0,1,1,0,1,3,3,3,3,3,1,0,1,1,0,1,0,1], 
-            [1,0,1,0,0,0,0,1,3,3,3,3,3,1,0,0,0,0,1,0,1], 
-            [3,0,1,1,1,1,0,0,0,0,0,0,0,0,0,1,1,1,1,0,3], // Tunnel row, opened path below box
-            [1,0,0,0,0,0,0,1,1,1,1,1,1,1,0,0,0,0,0,0,1], // Opened bottom center
-            [1,0,1,1,0,1,1,1,1,0,1,0,1,1,1,1,0,1,1,0,1],
-            [1,0,0,0,0,1,1,0,0,0,3,0,0,0,1,1,0,0,0,0,1], 
-            [1,1,0,1,0,0,0,0,1,1,1,1,1,0,0,0,0,1,0,1,1],
-            [1,0,0,1,0,1,0,1,1,0,0,0,1,1,0,1,0,1,0,0,1],
-            [1,0,1,1,0,1,0,0,0,0,1,0,0,0,0,1,0,1,1,0,1],
-            [1,2,0,0,0,1,1,1,0,1,1,1,0,1,1,1,0,0,0,2,1],
-            [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
-        ];
-         const map3 = [ // Map 3: Ft7na bzaf dyal triqan f l wst
-            [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
-            [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-            [1,0,1,1,1,1,0,1,1,1,1,1,1,1,0,1,1,1,1,0,1],
-            [1,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,1], // Opened vertical path
-            [1,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,1], // Opened horizontal path
-            [1,0,1,0,1,1,0,1,3,3,3,3,3,1,0,1,1,0,1,0,1], 
-            [1,0,1,0,1,1,0,1,3,3,3,3,3,1,0,1,1,0,1,0,1], 
-            [1,2,0,0,1,1,0,1,3,3,3,3,3,1,0,1,1,0,0,2,1], // Opened path near Power Pellet
-            [1,1,1,0,1,1,0,1,1,1,1,1,1,1,0,1,1,0,1,1,1], 
-            [3,3,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,3,3], // Tunnel row, more open
-            [1,1,1,0,1,1,0,1,1,1,1,1,1,1,0,1,1,0,1,1,1], 
-            [1,2,0,0,1,1,0,1,3,3,3,3,3,1,0,1,1,0,0,2,1], // Opened path near Power Pellet
-            [1,0,1,0,1,1,0,1,3,3,3,3,3,1,0,1,1,0,1,0,1], 
-            [1,0,1,0,1,1,0,1,3,3,3,3,3,1,0,1,1,0,1,0,1], 
-            [1,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,1], // Opened horizontal path
-            [1,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,1], // Opened vertical path
-            [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
-            [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
-        ];
-        
-        const allMaps = [ 
-            { map: map1, playerStart: { x: 10, y: 13 }, ghostStart: [ { x: 10, y: 7, color: '#EF4444', mode: 'direct'}, { x: 9, y: 8, color: '#F472B6', mode: 'ambush'}, { x: 10, y: 8, color: '#22D3EE', mode: 'direct'}, { x: 11, y: 8, color: '#F97316', mode: 'random'} ], ghostBoxExit: { x: 10, y: 6 } }, 
-            { map: map2, playerStart: { x: 10, y: 12 }, ghostStart: [ { x: 10, y: 7, color: '#EF4444', mode: 'direct'}, { x: 9, y: 8, color: '#F472B6', mode: 'ambush'}, { x: 10, y: 8, color: '#22D3EE', mode: 'direct'}, { x: 11, y: 8, color: '#F97316', mode: 'random'} ], ghostBoxExit: { x: 10, y: 6 } }, 
-            { map: map3, playerStart: { x: 10, y: 14 }, ghostStart: [ { x: 10, y: 6, color: '#EF4444', mode: 'direct'}, { x: 9, y: 7, color: '#F472B6', mode: 'ambush'}, { x: 10, y: 7, color: '#22D3EE', mode: 'direct'}, { x: 11, y: 7, color: '#F97316', mode: 'random'} ], ghostBoxExit: { x: 10, y: 5 } } 
-        ];
+        // --- Maps Data (MORE OPEN LAYOUTS) ---
+        const map1_open = [[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[1,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,1],[1,0,1,1,0,1,1,1,1,0,1,0,1,1,1,1,0,1,1,0,1],[1,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,1],[1,0,0,0,0,1,0,0,0,0,0,0,0,0,0,1,0,0,0,0,1],[1,0,1,1,0,1,3,3,3,3,3,3,3,3,3,1,0,1,1,0,1],[1,0,0,0,0,0,3,1,1,1,1,1,1,1,3,0,0,0,0,0,1],[1,0,1,1,0,1,3,1,3,3,3,3,3,1,3,1,0,1,1,0,1],[1,0,1,1,0,1,3,1,3,3,3,3,3,1,3,1,0,1,1,0,1],[3,0,0,0,0,0,3,0,0,0,0,0,0,0,3,0,0,0,0,0,3],[1,0,1,1,0,1,3,3,3,3,3,3,3,3,3,1,0,1,1,0,1],[1,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,1],[1,0,1,1,0,1,1,1,1,0,1,0,1,1,1,1,0,1,1,0,1],[1,0,0,0,0,0,0,0,0,0,3,0,0,0,0,0,0,0,0,0,1],[1,0,1,1,1,1,0,1,1,1,1,1,1,1,0,1,1,1,1,0,1],[1,0,1,1,1,1,0,0,0,0,0,0,0,0,0,1,1,1,1,0,1],[1,2,0,0,0,0,0,1,1,0,1,0,1,1,0,0,0,0,0,2,1],[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]];
+        const map2_open = [[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[1,2,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,2,1],[1,0,1,1,1,0,1,1,1,0,1,0,1,1,1,0,1,1,1,0,1],[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],[1,0,1,1,1,0,1,1,1,1,1,1,1,1,0,1,1,1,1,0,1],[1,0,0,0,0,0,0,3,3,3,3,3,3,3,0,0,0,0,0,0,1],[1,0,1,1,1,0,1,0,1,1,1,1,1,0,0,1,1,1,1,0,1],[1,0,1,1,1,0,1,0,3,3,3,3,3,0,0,1,1,1,1,0,1],[1,0,0,0,0,0,0,0,3,3,3,3,3,0,0,0,0,0,0,0,1],[3,0,1,1,1,1,1,0,0,0,0,0,0,0,1,1,1,1,1,0,3],[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],[1,0,1,1,1,1,1,1,1,0,1,0,1,1,1,1,1,1,1,0,1],[1,0,0,0,0,0,0,0,0,0,3,0,0,0,0,0,0,0,0,0,1],[1,1,1,1,1,0,1,1,1,1,1,1,1,1,0,1,1,1,1,1,1],[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],[1,0,1,1,1,1,1,1,0,1,1,1,0,1,1,1,1,1,1,0,1],[1,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,1],[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]];
+        const map3_open = [[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[1,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,1],[1,0,1,1,1,1,0,1,1,1,1,1,1,1,0,1,1,1,1,0,1],[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],[1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1],[1,0,0,0,0,0,0,1,3,3,3,3,3,1,0,0,0,0,0,0,1],[1,1,1,1,1,0,1,1,3,3,3,3,3,1,1,0,1,1,1,1,1],[1,0,0,0,0,0,0,0,3,3,3,3,3,0,0,0,0,0,0,0,1],[1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1],[3,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,3],[1,1,1,1,1,0,1,1,1,1,1,1,1,1,1,0,1,1,1,1,1],[1,0,0,0,0,0,0,0,3,3,3,3,3,0,0,0,0,0,0,0,1],[1,1,1,1,1,0,1,1,3,3,3,3,3,1,1,0,1,1,1,1,1],[1,0,0,0,0,0,0,1,3,3,3,3,3,1,0,0,0,0,0,0,1],[1,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0,1],[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],[1,2,0,0,0,0,0,1,1,1,1,1,1,1,0,0,0,0,0,2,1],[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]];
+        const allMaps = [ { map: map1_open, playerStart: { x: 10, y: 13 }, ghostStart: [ { x: 10, y: 7, color: '#EF4444', mode: 'direct'}, { x: 9, y: 8, color: '#F472B6', mode: 'ambush'}, { x: 10, y: 8, color: '#22D3EE', mode: 'direct'}, { x: 11, y: 8, color: '#F97316', mode: 'random'} ], ghostBoxExit: { x: 10, y: 6 } }, { map: map2_open, playerStart: { x: 10, y: 12 }, ghostStart: [ { x: 10, y: 7, color: '#EF4444', mode: 'direct'}, { x: 9, y: 8, color: '#F472B6', mode: 'ambush'}, { x: 10, y: 8, color: '#22D3EE', mode: 'direct'}, { x: 11, y: 8, color: '#F97316', mode: 'random'} ], ghostBoxExit: { x: 10, y: 6 } }, { map: map3_open, playerStart: { x: 10, y: 14 }, ghostStart: [ { x: 10, y: 6, color: '#EF4444', mode: 'direct'}, { x: 9, y: 7, color: '#F472B6', mode: 'ambush'}, { x: 10, y: 7, color: '#22D3EE', mode: 'direct'}, { x: 11, y: 7, color: '#F97316', mode: 'random'} ], ghostBoxExit: { x: 10, y: 5 } } ];
         let currentMapData = allMaps[0]; 
         let mapWidth = 0; 
         let mapHeight = 0; 
@@ -235,29 +175,11 @@
             const canvasRef = useRef(null);
             const animationFrameId = useRef(null); 
 
-            // --- Helper: Check Collision (RJ3NA L-CHECK DYAL L7ITAN) ---
-             const checkCollision = useCallback((entity, dx, dy) => {
-                 if (!mapState) return true; // Blocki ila l'map ma wajdach
-                 const checkX = entity.x + dx;
-                 const checkY = entity.y + dy;
-                 const radius = entity.radius;
+            // --- Helper: Check Collision ---
+             const checkCollision = useCallback((entity, dx, dy) => { /* ... kima kan ... */ 
+                 if (!mapState) return true; const checkX = entity.x + dx; const checkY = entity.y + dy; const radius = entity.radius;
                  const corners = [ { x: checkX - radius, y: checkY - radius }, { x: checkX + radius -1, y: checkY - radius }, { x: checkX - radius, y: checkY + radius -1 }, { x: checkX + radius -1, y: checkY + radius -1 } ];
-                 for (const corner of corners) {
-                    const gridX = Math.floor(corner.x / gridSize);
-                    const gridY = Math.floor(corner.y / gridSize);
-                    // BDIL: Updated tunnel logic based on currentRound
-                    let tunnelRowY = -1;
-                    if (currentRound === 1 || currentRound === 2) tunnelRowY = 9;
-                    else if (currentRound === 3) tunnelRowY = 9; // Map 3 tunnel row updated
-                    
-                    if (gridX < 0 || gridX >= mapWidth || gridY < 0 || gridY >= mapHeight) {
-                        if (gridY === tunnelRowY && (gridX < 0 || gridX >= mapWidth)) continue; // Allow tunnel wrapping
-                        return true; // Hit boundary
-                    }
-                    // RJ3NA L-CHECK DYAL L7ITAN (MAPSTATE === 1)
-                    if (mapState[gridY]?.[gridX] === 1) return true; 
-                }
-                return false; // Makaynch collision
+                 for (const corner of corners) { const gridX = Math.floor(corner.x / gridSize); const gridY = Math.floor(corner.y / gridSize); let tunnelRowY = -1; if (currentRound === 1 || currentRound === 2) tunnelRowY = 9; else if (currentRound === 3) tunnelRowY = 9; if (gridX < 0 || gridX >= mapWidth || gridY < 0 || gridY >= mapHeight) { if (gridY === tunnelRowY && (gridX < 0 || gridX >= mapWidth)) continue; return true; } if (mapState[gridY]?.[gridX] === 1) return true; } return false; 
              }, [mapState, currentRound]); 
 
             // --- Game Logic Functions ---
@@ -274,8 +196,7 @@
                  if(canvasRef.current) { canvasRef.current.width = mapWidth * gridSize; canvasRef.current.height = mapHeight * gridSize; }
             }, []); 
 
-            // RJ3NA L-CHECK DYAL COLLISION QBL MA NBDLO DIRECTION W QBL MA NT7RKO
-            const updatePlayer = useCallback(() => { /* ... kima kan f version l msll7a ... */ 
+            const updatePlayer = useCallback(() => { /* ... kima kan ... */ 
                 if (!canvasRef.current) return; const p = playerRef.current; if (!checkCollision(p, p.nextDx, p.nextDy)) { p.dx = p.nextDx; p.dy = p.nextDy; }
                 if (!checkCollision(p, p.dx, p.dy)) { p.x += p.dx; p.y += p.dy; } else { p.dx = 0; p.dy = 0; }
                 const cw = canvasRef.current.width; if (p.x < -p.radius) p.x = cw + p.radius; if (p.x > cw + p.radius) p.x = -p.radius;
@@ -283,8 +204,7 @@
                 if (gx >= 0 && gx < mapWidth && gy >= 0 && gy < mapHeight) { const cell = mapState?.[gy]?.[gx]; if (cell === 0 || cell === 2) { setMapState(prevMap => { const nm = [...prevMap]; nm[gy] = [...nm[gy]]; nm[gy][gx] = 3; return nm; }); if(cell === 0) { setScore(s => s + 10); setPelletsRemaining(p => p - 1); } else { setScore(s => s + 50); ghostsRef.current.forEach(g => { g.isFrightened = true; g.frightenedTimer = 300; }); setGhostStates(prev => prev.map(gs => ({...gs, isFrightened: true, color: '#3B82F6'}))); } } }
             }, [checkCollision, mapState]); 
 
-             // RJ3NA L-CHECK DYAL COLLISION F AI W F L-MOVEMENT + SL7NA LOGIC DYAL L-KHROJ
-             const updateGhosts = useCallback(() => { /* ... kima kan f version l msll7a ... */ 
+             const updateGhosts = useCallback(() => { /* ... kima kan ... */ 
                 if (!canvasRef.current) return; const player = playerRef.current; const ghosts = ghostsRef.current; let changed = false; 
                 ghosts.forEach(g => { let needsUpdate = false; 
                     if (g.isFrightened) { g.frightenedTimer--; if (g.color !== '#3B82F6') { g.color = '#3B82F6'; needsUpdate = true; } if (g.frightenedTimer <= 0) { g.isFrightened = false; g.color = g.originalColor; needsUpdate = true; } } 
