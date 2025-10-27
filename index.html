@@ -17,7 +17,7 @@
           "action":{
           "type":"launch_miniapp",
           "name":"Pixel Muncher",
-          "url":"https://https://pixel-coral-theta.vercel.app/" 
+          "url":"https://<YOUR_APP_URL>" 
           }
       },
       "castShareUrl": "https://<YOUR_APP_URL>", 
@@ -125,32 +125,20 @@
 
         async function getProvider() {
             try {
-                console.log("Attempting to get provider via sdk.wallet.getEthereumProvider()");
                 const p = await sdk.wallet.getEthereumProvider();
-                if (p) {
-                    console.log("Farcaster provider found:", p);
-                    return p;
-                }
-            } catch (e) {
-                console.warn("Error getting Farcaster provider, falling back to window.ethereum", e);
-            }
-            console.log("Farcaster provider not found, checking window.ethereum");
-            if (window.ethereum) {
-                console.log("window.ethereum found:", window.ethereum);
-                return window.ethereum;
-            }
-            console.log("No provider found.");
-            return null;
+                if (p) return p;
+            } catch (e) { console.warn("Farcaster provider error", e); }
+            return window.ethereum ?? null;
         }
 
         // ========= 3. Game Constants & Config =========
         const gridSize = 20;
-        const GAME_FEE_ETH = '0.00001'; // Fee l kol match
-        const DEVELOPER_WALLET = '0x0e315015A4eE8d5D6c4b43E300dF76b965D55bDd'; // <--- BDDL HADI B L'ADRESSE DYALK!
-        const ROUND_TIME = 60; // Wakht dyal round (ila bghinah) - Not used in Pac-Man yet
+        const GAME_FEE_ETH = '0.0001'; 
+        const DEVELOPER_WALLET = '0x68c71247712E39925d31d82FdC02dfe0f8e24de7'; // <-- ADRESSE SAHIHA DB
         const MAX_LIVES = 3;
 
         // --- Maps Data ---
+        // Maze layout: 1 = Wall, 0 = Pellet, 2 = Power Pellet, 3 = Empty
         const map1 = [
             [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
             [1,2,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,2,1],
@@ -158,67 +146,104 @@
             [1,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,1],
             [1,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,1],
             [1,0,1,1,0,1,3,3,3,3,3,3,3,3,3,1,0,1,1,0,1],
-            [1,0,1,1,0,1,3,1,1,1,1,1,1,1,3,1,0,1,1,0,1],
-            [1,0,0,0,0,1,3,1,3,3,3,3,3,1,3,1,0,0,0,0,1],
-            [1,1,1,1,0,1,3,1,3,3,3,3,3,1,3,1,0,1,1,1,1],
+            [1,0,1,1,0,1,3,1,1,1,1,1,1,1,3,1,0,1,1,0,1], // Ghost box row 1
+            [1,0,0,0,0,1,3,1,3,3,3,3,3,1,3,1,0,0,0,0,1], // Ghost box row 2 (start positions)
+            [1,1,1,1,0,1,3,1,3,3,3,3,3,1,3,1,0,1,1,1,1], // Ghost box row 3
             [3,3,3,1,0,1,3,1,1,1,1,1,1,1,3,1,0,1,3,3,3], // Tunnel row
             [1,1,1,1,0,1,3,3,3,3,3,3,3,3,3,1,0,1,1,1,1],
             [1,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,1],
             [1,0,1,1,0,1,1,1,1,0,1,0,1,1,1,1,0,1,1,0,1],
-            [1,0,1,1,0,0,0,0,0,0,3,0,0,0,0,0,0,1,1,0,1], // Empty cell fl wst
+            [1,0,1,1,0,0,0,0,0,0,3,0,0,0,0,0,0,1,1,0,1], // Player start row
             [1,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,1],
             [1,0,1,1,1,1,0,0,0,0,1,0,0,0,0,1,1,1,1,0,1],
             [1,2,0,0,0,0,0,1,1,0,1,0,1,1,0,0,0,0,0,2,1],
             [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
         ];
+         const map2 = [
+            [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+            [1,2,0,0,1,1,1,0,0,0,1,0,0,0,1,1,1,0,0,2,1],
+            [1,0,1,0,0,0,0,0,1,0,1,0,1,0,0,0,0,0,1,0,1],
+            [1,0,1,0,1,1,0,1,1,0,0,0,1,1,0,1,1,0,1,0,1],
+            [1,0,0,0,1,1,0,1,1,1,1,1,1,1,0,1,1,0,0,0,1],
+            [1,1,1,0,0,0,0,3,3,3,3,3,3,3,0,0,0,0,1,1,1],
+            [1,0,0,0,1,1,0,1,1,1,1,1,1,1,0,1,1,0,0,0,1], // Ghost box row 1
+            [1,0,1,0,1,1,0,1,3,3,3,3,3,1,0,1,1,0,1,0,1], // Ghost box row 2 (start positions)
+            [1,0,1,0,0,0,0,1,3,3,3,3,3,1,0,0,0,0,1,0,1], // Ghost box row 3
+            [3,0,1,1,1,1,0,1,1,1,1,1,1,1,0,1,1,1,1,0,3], // Tunnel row
+            [1,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,1],
+            [1,0,1,1,0,1,1,1,1,0,1,0,1,1,1,1,0,1,1,0,1],
+            [1,0,0,0,0,1,1,0,0,0,3,0,0,0,1,1,0,0,0,0,1], // Player start row
+            [1,1,0,1,0,0,0,0,1,1,1,1,1,0,0,0,0,1,0,1,1],
+            [1,0,0,1,0,1,0,1,1,0,0,0,1,1,0,1,0,1,0,0,1],
+            [1,0,1,1,0,1,0,0,0,0,1,0,0,0,0,1,0,1,1,0,1],
+            [1,2,0,0,0,1,1,1,0,1,1,1,0,1,1,1,0,0,0,2,1],
+            [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
+        ];
+         const map3 = [
+            [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+            [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+            [1,0,1,1,1,1,0,1,1,1,1,1,1,1,0,1,1,1,1,0,1],
+            [1,0,1,1,1,1,0,1,1,1,1,1,1,1,0,1,1,1,1,0,1],
+            [1,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,1],
+            [1,0,1,1,1,1,0,1,3,3,3,3,3,1,0,1,1,1,1,0,1], // Ghost box row 1
+            [1,0,1,1,1,1,0,1,3,3,3,3,3,1,0,1,1,1,1,0,1], // Ghost box row 2 (start positions)
+            [1,2,0,0,0,0,0,1,3,3,3,3,3,1,0,0,0,0,0,2,1], // Ghost box row 3
+            [1,1,1,1,1,1,0,1,1,1,1,1,1,1,0,1,1,1,1,1,1],
+            [3,3,3,3,3,1,0,0,0,0,0,0,0,0,0,1,3,3,3,3,3], // Tunnel row
+            [1,1,1,1,1,1,0,1,1,1,1,1,1,1,0,1,1,1,1,1,1],
+            [1,2,0,0,0,0,0,1,3,3,3,3,3,1,0,0,0,0,0,2,1],
+            [1,0,1,1,1,1,0,1,3,3,3,3,3,1,0,1,1,1,1,0,1],
+            [1,0,1,1,1,1,0,1,3,3,3,3,3,1,0,1,1,1,1,0,1], // Player start row
+            [1,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,1],
+            [1,0,1,1,1,1,0,1,1,1,1,1,1,1,0,1,1,1,1,0,1],
+            [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+            [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
+        ];
+        
         const allMaps = [ 
             { 
               map: map1, 
               playerStart: { x: 10, y: 13 }, 
-              ghostStart: [
-                  { x: 10, y: 7, color: '#EF4444', mode: 'direct'}, // Red (Blinky)
-                  { x: 9, y: 8, color: '#F472B6', mode: 'ambush'}, // Pink (Pinky)
-                  { x: 10, y: 8, color: '#22D3EE', mode: 'direct'}, // Cyan (Inky)
-                  { x: 11, y: 8, color: '#F97316', mode: 'random'} // Orange (Clyde)
-              ],
-              ghostBoxExit: { x: 10, y: 7 } 
+              ghostStart: [ { x: 10, y: 7, color: '#EF4444', mode: 'direct'}, { x: 9, y: 8, color: '#F472B6', mode: 'ambush'}, { x: 10, y: 8, color: '#22D3EE', mode: 'direct'}, { x: 11, y: 8, color: '#F97316', mode: 'random'} ],
+              ghostBoxExit: { x: 10, y: 6 } // Exit just above the box for map 1
+            },
+            { 
+              map: map2, 
+              playerStart: { x: 10, y: 12 }, 
+              ghostStart: [ { x: 10, y: 7, color: '#EF4444', mode: 'direct'}, { x: 9, y: 8, color: '#F472B6', mode: 'ambush'}, { x: 10, y: 8, color: '#22D3EE', mode: 'direct'}, { x: 11, y: 8, color: '#F97316', mode: 'random'} ],
+              ghostBoxExit: { x: 10, y: 6 } // Same exit logic
+            },
+            { 
+              map: map3, 
+              playerStart: { x: 10, y: 14 }, // Player start different
+              ghostStart: [ { x: 10, y: 6, color: '#EF4444', mode: 'direct'}, { x: 9, y: 7, color: '#F472B6', mode: 'ambush'}, { x: 10, y: 7, color: '#22D3EE', mode: 'direct'}, { x: 11, y: 7, color: '#F97316', mode: 'random'} ],
+              ghostBoxExit: { x: 10, y: 5 } // Exit above the box
             }
         ];
-        const currentMapData = allMaps[0]; 
-        const mapWidth = currentMapData.map[0].length;
-        const mapHeight = currentMapData.map.length;
+        
+        let currentMapData = allMaps[0]; // Ghadi nbdloha f loadRound
+        let mapWidth = 0; // Ghadi nsetiwah f loadRound
+        let mapHeight = 0; // Ghadi nsetiwah f loadRound
 
         // ========= 4. React App Component =========
         function App() {
             // --- Game State ---
             const [gameState, setGameState] = useState('home'); 
+            const [currentRound, setCurrentRound] = useState(1); // ZDNA HADI
             const [score, setScore] = useState(0);
             const [lives, setLives] = useState(MAX_LIVES);
             const [pelletsRemaining, setPelletsRemaining] = useState(0);
-            const [mapState, setMapState] = useState(JSON.parse(JSON.stringify(currentMapData.map))); 
+            const [mapState, setMapState] = useState(null); // Ghadi nsetiwah f loadRound
             
             // --- Player State ---
             const playerRef = useRef({ 
-                x: currentMapData.playerStart.x * gridSize + gridSize / 2, 
-                y: currentMapData.playerStart.y * gridSize + gridSize / 2, 
-                radius: gridSize / 2 - 2, 
-                color: '#FACC15', 
-                speed: 1.8,
+                x: 0, y: 0, radius: gridSize / 2 - 2, color: '#FACC15', speed: 1.8,
                 dx: 0, dy: 0, nextDx: 0, nextDy: 0 
             });
 
              // --- Ghost State ---
-             const ghostsRef = useRef(currentMapData.ghostStart.map(g => ({
-                x: g.x * gridSize + gridSize / 2, y: g.y * gridSize + gridSize / 2,
-                startX: g.x * gridSize + gridSize / 2, startY: g.y * gridSize + gridSize / 2,
-                radius: gridSize / 2 - 2, color: g.color, originalColor: g.color, speed: 1.3,
-                dx: 0, dy: 0, isFrightened: false, frightenedTimer: 0, chaseMode: g.mode,
-                isInBox: true, leaveBoxTimer: Math.random() * 120 + 60 
-             })));
-             const [ghostStates, setGhostStates] = useState(ghostsRef.current.map(g => ({ 
-                id: g.originalColor, isFrightened: g.isFrightened, 
-                x: g.x, y: g.y, color: g.color
-             })));
+             const ghostsRef = useRef([]); // Ghadi nsetiwah f loadRound
+             const [ghostStates, setGhostStates] = useState([]); // Ghadi nsetiwah f loadRound
 
             // --- Farcaster/Wallet State ---
             const [statusMessage, setStatusMessage] = useState('');
@@ -232,50 +257,103 @@
 
             // --- Helper: Check Collision ---
              const checkCollision = useCallback((entity, dx, dy) => {
-                const checkX = entity.x + dx;
-                const checkY = entity.y + dy;
-                const radius = entity.radius;
-                const corners = [
-                    { x: checkX - radius, y: checkY - radius }, { x: checkX + radius -1, y: checkY - radius },
-                    { x: checkX - radius, y: checkY + radius -1 }, { x: checkX + radius -1, y: checkY + radius -1 }
-                ];
-                for (const corner of corners) {
+                 if (!mapState) return true; // Ila l'map majach, blocki kolchi
+                 const checkX = entity.x + dx;
+                 const checkY = entity.y + dy;
+                 const radius = entity.radius;
+                 const corners = [ { x: checkX - radius, y: checkY - radius }, { x: checkX + radius -1, y: checkY - radius }, { x: checkX - radius, y: checkY + radius -1 }, { x: checkX + radius -1, y: checkY + radius -1 } ];
+                 for (const corner of corners) {
                     const gridX = Math.floor(corner.x / gridSize);
                     const gridY = Math.floor(corner.y / gridSize);
+                    // Tunnel Logic: Check if the gridY corresponds to a known tunnel row for the current map
+                    const tunnelRowY = (allMaps[currentRound - 1]?.map === map1 || allMaps[currentRound - 1]?.map === map2) ? 9 : 
+                                       (allMaps[currentRound - 1]?.map === map3) ? 9 : -1; // Added check for map3 tunnel row (also 9)
+                    
                     if (gridX < 0 || gridX >= mapWidth || gridY < 0 || gridY >= mapHeight) {
-                        if (gridY === 9 && (gridX < 0 || gridX >= mapWidth)) continue; 
+                        if (gridY === tunnelRowY && (gridX < 0 || gridX >= mapWidth)) continue; // Allow tunnel wrapping
                         return true; 
                     }
                     if (mapState[gridY]?.[gridX] === 1) return true; 
                 }
                 return false;
-             }, [mapState]); 
+             }, [mapState, currentRound]); // ZDNA currentRound dependency
 
             // --- Game Logic Functions ---
+
+            // NEW FUNCTION: Load Round Data
+            const loadRoundData = useCallback((roundNum) => {
+                 if (roundNum > allMaps.length || roundNum < 1) {
+                    console.error("Invalid round number:", roundNum);
+                    setGameState('home'); // Go back home if invalid round
+                    return;
+                 }
+                 console.log(`Loading data for round ${roundNum}`);
+                 setCurrentRound(roundNum);
+                 currentMapData = allMaps[roundNum - 1]; // Update currentMapData global
+                 mapWidth = currentMapData.map[0].length;
+                 mapHeight = currentMapData.map.length;
+
+                 setMapState(JSON.parse(JSON.stringify(currentMapData.map)));
+                 
+                 // Reset Player
+                 playerRef.current.x = currentMapData.playerStart.x * gridSize + gridSize / 2;
+                 playerRef.current.y = currentMapData.playerStart.y * gridSize + gridSize / 2;
+                 playerRef.current.dx = 0; playerRef.current.dy = 0; playerRef.current.nextDx = 0; playerRef.current.nextDy = 0;
+
+                 // Reset Ghosts
+                 ghostsRef.current = currentMapData.ghostStart.map(g => ({
+                    x: g.x * gridSize + gridSize / 2, y: g.y * gridSize + gridSize / 2,
+                    startX: g.x * gridSize + gridSize / 2, startY: g.y * gridSize + gridSize / 2,
+                    radius: gridSize / 2 - 2, color: g.color, originalColor: g.color, speed: 1.3,
+                    dx: 0, dy: 0, isFrightened: false, frightenedTimer: 0, chaseMode: g.mode,
+                    isInBox: true, leaveBoxTimer: Math.random() * 120 + 60 
+                 }));
+                 setGhostStates(ghostsRef.current.map(g => ({ 
+                    id: g.originalColor, isFrightened: g.isFrightened, 
+                    x: g.x, y: g.y, color: g.color
+                 })));
+
+                 // Count pellets for the new map
+                 let pelletCount = 0;
+                 currentMapData.map.forEach(row => row.forEach(cell => { if (cell === 0) pelletCount++; }));
+                 setPelletsRemaining(pelletCount);
+                 console.log("Pellets for this round:", pelletCount);
+
+                 // Set canvas size (important if maps have different dimensions)
+                 if(canvasRef.current) {
+                     canvasRef.current.width = mapWidth * gridSize;
+                     canvasRef.current.height = mapHeight * gridSize;
+                 }
+
+            }, []); // No dependencies, it's a setup function
+
+
             const updatePlayer = useCallback(() => {
+                if (!canvasRef.current) return; // Ensure canvas exists
                 const player = playerRef.current;
-                if (!checkCollision(player, player.nextDx, player.nextDy)) {
-                    player.dx = player.nextDx; player.dy = player.nextDy;
-                }
-                if (!checkCollision(player, player.dx, player.dy)) {
-                    player.x += player.dx; player.y += player.dy;
-                } else {
-                    player.dx = 0; player.dy = 0;
-                }
-                if (player.x < -player.radius) player.x = canvasRef.current.width + player.radius;
-                if (player.x > canvasRef.current.width + player.radius) player.x = -player.radius;
+                if (!checkCollision(player, player.nextDx, player.nextDy)) { player.dx = player.nextDx; player.dy = player.nextDy; }
+                if (!checkCollision(player, player.dx, player.dy)) { player.x += player.dx; player.y += player.dy; } 
+                else { player.dx = 0; player.dy = 0; }
+                
+                // Tunnel wrapping logic needs canvas width
+                const canvasWidth = canvasRef.current.width;
+                if (player.x < -player.radius) player.x = canvasWidth + player.radius;
+                if (player.x > canvasWidth + player.radius) player.x = -player.radius;
+
                 const gridX = Math.floor(player.x / gridSize);
                 const gridY = Math.floor(player.y / gridSize);
                 if (gridX >= 0 && gridX < mapWidth && gridY >= 0 && gridY < mapHeight) {
-                    const cell = mapState[gridY][gridX];
+                    const cell = mapState?.[gridY]?.[gridX]; // Add null checks
                     if (cell === 0 || cell === 2) { 
-                        const newMap = [...mapState]; 
-                        newMap[gridY] = [...newMap[gridY]]; 
-                        newMap[gridY][gridX] = 3; 
-                        setMapState(newMap); 
-                        if(cell === 0) {
-                             setScore(s => s + 10); setPelletsRemaining(p => p - 1);
-                        } else { 
+                        setMapState(prevMap => {
+                            if (!prevMap) return null;
+                            const newMap = [...prevMap]; 
+                            newMap[gridY] = [...newMap[gridY]]; 
+                            newMap[gridY][gridX] = 3; 
+                            return newMap;
+                        }); 
+                        if(cell === 0) { setScore(s => s + 10); setPelletsRemaining(p => p - 1); } 
+                        else { 
                              setScore(s => s + 50);
                              ghostsRef.current.forEach(g => { g.isFrightened = true; g.frightenedTimer = 300; });
                              setGhostStates(prev => prev.map(gs => ({...gs, isFrightened: true, color: '#3B82F6'})));
@@ -285,6 +363,7 @@
             }, [checkCollision, mapState]);
 
              const updateGhosts = useCallback(() => {
+                if (!canvasRef.current) return; // Ensure canvas exists
                 const player = playerRef.current;
                 const ghosts = ghostsRef.current;
                 let ghostStatesChanged = false; 
@@ -299,8 +378,10 @@
                         ghost.leaveBoxTimer--;
                         if (ghost.leaveBoxTimer <= 0) {
                             ghost.isInBox = false;
-                            ghost.x = currentMapData.ghostBoxExit.x * gridSize + gridSize / 2;
-                            ghost.y = currentMapData.ghostBoxExit.y * gridSize + gridSize / 2;
+                            // Use exit specific to current map
+                            const exit = allMaps[currentRound - 1].ghostBoxExit; 
+                            ghost.x = exit.x * gridSize + gridSize / 2;
+                            ghost.y = exit.y * gridSize + gridSize / 2;
                             ghost.dx = 0; ghost.dy = -ghost.speed; 
                         } else {
                             if (ghost.x !== ghost.startX || ghost.y !== ghost.startY) { ghost.x = ghost.startX; ghost.y = ghost.startY; stateNeedsUpdate = true; }
@@ -346,14 +427,18 @@
                             else { ghost.dx = 0; ghost.dy = 0; } }
                      if (!checkCollision(ghost, ghost.dx, ghost.dy)) { ghost.x += ghost.dx; ghost.y += ghost.dy; moved = true; } 
                      else { ghost.dx = 0; ghost.dy = 0; }
-                    if (ghost.x < -ghost.radius) ghost.x = canvasRef.current.width + ghost.radius;
-                    if (ghost.x > canvasRef.current.width + ghost.radius) ghost.x = -ghost.radius;
+                     
+                    // Tunnel wrapping needs canvas width
+                    const canvasWidth = canvasRef.current.width;
+                    if (ghost.x < -ghost.radius) ghost.x = canvasWidth + ghost.radius;
+                    if (ghost.x > canvasWidth + ghost.radius) ghost.x = -ghost.radius;
+
                     if (moved || stateNeedsUpdate) { ghostStatesChanged = true; }
                 }); 
                  if (ghostStatesChanged) {
                     setGhostStates(ghostsRef.current.map(g => ({ id: g.originalColor, isFrightened: g.isFrightened, x: g.x, y: g.y, color: g.color })));
                  }
-            }, [checkCollision]);
+            }, [checkCollision, currentRound]); // ZDNA currentRound dependency
 
             const checkGhostPlayerCollision = useCallback(() => {
                 const player = playerRef.current;
@@ -379,40 +464,62 @@
                      setGhostStates(prev => prev.map((gs, index) => ghostsEaten.includes(index) ? {...gs, x: ghostsRef.current[index].x, y: ghostsRef.current[index].y, isFrightened: false, color: ghostsRef.current[index].originalColor} : gs));
                 }
                 if (livesLost > 0) {
-                    setLives(l => l - livesLost);
+                    setLives(l => l - livesLost); // Update lives state
                     setGameState('paused'); 
+                     // Check lives *after* updating state
                      setTimeout(() => {
-                         if (lives - livesLost <= 0) { setGameState('gameover'); } 
-                         else { resetPositionsAfterDeath(); setGameState('playing'); }
+                         // Read the potentially updated 'lives' state here indirectly
+                         // It's safer to rely on the value *before* the decrement for the check
+                         if (lives - livesLost <= 0) { 
+                            setGameState('gameover'); 
+                         } else { 
+                             resetPositionsAfterDeath(); 
+                             setGameState('playing'); 
+                         }
                      }, 1500);
                 }
-            }, [lives]);
+            }, [lives]); // Depend on lives
 
             const resetPositionsAfterDeath = useCallback(() => {
-                playerRef.current.x = currentMapData.playerStart.x * gridSize + gridSize / 2;
-                playerRef.current.y = currentMapData.playerStart.y * gridSize + gridSize / 2;
-                playerRef.current.dx = 0; playerRef.current.dy = 0; playerRef.current.nextDx = 0; playerRef.current.nextDy = 0;
-                ghostsRef.current.forEach(ghost => {
-                    ghost.x = ghost.startX; ghost.y = ghost.startY;
+                 // Use currentRound to get the correct start positions
+                 const mapDataForReset = allMaps[currentRound - 1]; 
+                 playerRef.current.x = mapDataForReset.playerStart.x * gridSize + gridSize / 2;
+                 playerRef.current.y = mapDataForReset.playerStart.y * gridSize + gridSize / 2;
+                 playerRef.current.dx = 0; playerRef.current.dy = 0; playerRef.current.nextDx = 0; playerRef.current.nextDy = 0;
+                 ghostsRef.current.forEach((ghost, index) => {
+                    // Use the correct start positions for the current round
+                    const startPos = mapDataForReset.ghostStart[index]; 
+                    ghost.x = startPos.x * gridSize + gridSize / 2; 
+                    ghost.y = startPos.y * gridSize + gridSize / 2; 
+                    // Update startX/startY as well in case reset is called multiple times
+                    ghost.startX = ghost.x; 
+                    ghost.startY = ghost.y;
                     ghost.dx = 0; ghost.dy = 0;
                     ghost.isFrightened = false; ghost.color = ghost.originalColor;
                     ghost.isInBox = true; ghost.leaveBoxTimer = Math.random() * 120 + 60; 
                 });
                 setGhostStates(ghostsRef.current.map(g => ({ id: g.originalColor, isFrightened: false, x: g.x, y: g.y, color: g.color })));
-            }, []);
+            }, [currentRound]); // Depend on currentRound
 
+            // MODIFIED CHECK WIN: Handles multiple rounds
             const checkWinCondition = useCallback(() => {
                 if (pelletsRemaining <= 0 && gameState === 'playing') {
-                    setGameState('gamewon');
+                    console.log(`Round ${currentRound} cleared!`);
+                    if (currentRound < allMaps.length) {
+                        setGameState('round_won'); // Ghadi n triggeriw l modal dyal "Next Round"
+                    } else {
+                        setGameState('gamewon'); // Sala l match kaml
+                    }
                 }
-            }, [pelletsRemaining, gameState]);
+            }, [pelletsRemaining, gameState, currentRound]);
 
              // --- Drawing Functions ---
              const drawMap = useCallback((ctx) => {
+                 if (!mapState) return; // Add null check
                  let pelletCount = 0;
                  for (let y = 0; y < mapHeight; y++) {
                     for (let x = 0; x < mapWidth; x++) {
-                        const cell = mapState[y][x];
+                        const cell = mapState?.[y]?.[x]; // Add null check
                         if (cell === 1) { ctx.fillStyle = '#1D4ED8'; ctx.fillRect(x * gridSize, y * gridSize, gridSize + 0.5, gridSize + 0.5); } 
                         else if (cell === 0 || cell === 2) { 
                              ctx.beginPath(); const radius = (cell === 0) ? 3 : 6;
@@ -428,78 +535,71 @@
              const drawPlayer = useCallback((ctx) => {
                  const player = playerRef.current;
                  ctx.beginPath();
-                 ctx.arc(player.x, player.y, player.radius, 0.2 * Math.PI, 1.8 * Math.PI); // Pacman mouth
-                 ctx.lineTo(player.x, player.y); // Center of the circle
+                 // Simple circle for now
+                 ctx.arc(player.x, player.y, player.radius, 0, Math.PI * 2); 
+                 // ctx.arc(player.x, player.y, player.radius, 0.2 * Math.PI, 1.8 * Math.PI); 
+                 // ctx.lineTo(player.x, player.y); 
                  ctx.closePath();
                  ctx.fillStyle = player.color;
                  ctx.fill();
              }, []); 
 
              const drawGhosts = useCallback((ctx) => {
-                 ghostStates.forEach(ghost => {
+                 ghostStates.forEach(ghost => { // Draw simple circles
                     ctx.beginPath();
-                    ctx.arc(ghost.x, ghost.y, ghost.radius, Math.PI, 0); // Half circle top
-                    ctx.lineTo(ghost.x + ghost.radius, ghost.y + ghost.radius * 1.5); // Bottom right
-                    // Wavy bottom
-                    ctx.quadraticCurveTo(ghost.x + ghost.radius * 0.5, ghost.y + ghost.radius * 1.2, ghost.x, ghost.y + ghost.radius * 1.5); 
-                    ctx.quadraticCurveTo(ghost.x - ghost.radius * 0.5, ghost.y + ghost.radius * 1.2, ghost.x - ghost.radius, ghost.y + ghost.radius * 1.5);
-                    ctx.lineTo(ghost.x - ghost.radius, ghost.y); // Bottom left back to arc start
-                    ctx.closePath();
+                    ctx.arc(ghost.x, ghost.y, gridSize / 2 - 2, 0, Math.PI * 2); 
                     ctx.fillStyle = ghost.color;
                     ctx.fill();
-
-                    // Eyes
-                    const eyeOffsetX = ghost.radius * 0.3;
-                    const eyeOffsetY = -ghost.radius * 0.2;
-                    const eyeRadius = ghost.radius * 0.2;
-                    const pupilRadius = eyeRadius * 0.5;
-
-                    ctx.fillStyle = 'white'; // Sclera
-                    ctx.beginPath();
-                    ctx.arc(ghost.x - eyeOffsetX, ghost.y + eyeOffsetY, eyeRadius, 0, Math.PI * 2);
-                    ctx.fill();
-                    ctx.beginPath();
-                    ctx.arc(ghost.x + eyeOffsetX, ghost.y + eyeOffsetY, eyeRadius, 0, Math.PI * 2);
-                    ctx.fill();
-
-                    ctx.fillStyle = 'black'; // Pupil
-                    ctx.beginPath();
-                    ctx.arc(ghost.x - eyeOffsetX, ghost.y + eyeOffsetY, pupilRadius, 0, Math.PI * 2);
-                    ctx.fill();
-                    ctx.beginPath();
-                    ctx.arc(ghost.x + eyeOffsetX, ghost.y + eyeOffsetY, pupilRadius, 0, Math.PI * 2);
-                    ctx.fill();
-
+                    ctx.closePath();
                  });
              }, [ghostStates]); 
 
 
             // --- Game Loop ---
             const gameLoop = useCallback(() => {
-                if (gameState !== 'playing') {
-                    cancelAnimationFrame(animationFrameId.current);
-                    return;
-                }
+                // IMPORTANT: Removed gameState check from here, loop runs even if paused for modal
+                // Check moved inside requestAnimationFrame callback
+                
                 const canvas = canvasRef.current;
-                if (!canvas) return; // Add check for canvas
+                if (!canvas) return; 
                 const ctx = canvas.getContext('2d');
-                ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear
-                updatePlayer(); updateGhosts(); checkGhostPlayerCollision(); checkWinCondition(); // Update
-                drawMap(ctx); drawGhosts(ctx); drawPlayer(ctx); // Draw
-                animationFrameId.current = requestAnimationFrame(gameLoop);
+                ctx.clearRect(0, 0, canvas.width, canvas.height); 
+
+                // Only update if playing
+                if (gameState === 'playing') {
+                    updatePlayer(); 
+                    updateGhosts(); 
+                    checkGhostPlayerCollision(); 
+                    checkWinCondition(); 
+                }
+
+                drawMap(ctx); drawGhosts(ctx); drawPlayer(ctx); 
+                
+                // Continue loop ONLY if not ended
+                if (gameState === 'playing' || gameState === 'paused') {
+                   animationFrameId.current = requestAnimationFrame(gameLoop);
+                } else {
+                     console.log("Game loop stopping due to end state:", gameState);
+                }
+
             }, [gameState, updatePlayer, updateGhosts, checkGhostPlayerCollision, checkWinCondition, drawMap, drawPlayer, drawGhosts]); 
 
 
             // --- Effects ---
             useEffect(() => {
-                if (gameState === 'playing') {
-                    console.log("Starting game loop");
+                 // Start loop when component mounts or gameState becomes 'playing'
+                 // Stop when it's not 'playing' or 'paused'
+                if (gameState === 'playing' || gameState === 'paused') { 
+                    console.log("Starting/Resuming game loop for state:", gameState);
                     animationFrameId.current = requestAnimationFrame(gameLoop);
                 } else {
-                    console.log("Stopping game loop");
+                    console.log("Stopping game loop for state:", gameState);
                     cancelAnimationFrame(animationFrameId.current);
                 }
-                return () => cancelAnimationFrame(animationFrameId.current); 
+                return () => { // Cleanup on unmount or before next effect run
+                    console.log("Cleaning up animation frame");
+                    cancelAnimationFrame(animationFrameId.current);
+                }
             }, [gameState, gameLoop]); 
 
             useEffect(() => {
@@ -515,9 +615,13 @@
                     }
                 };
                 const canvas = canvasRef.current;
-                if(canvas && gameState === 'playing') { // Only focus/listen when playing
-                     canvas.setAttribute('tabindex', '0'); 
-                     canvas.focus();
+                // Add listener only when canvas exists
+                if(canvas) { 
+                     // Ensure canvas is focusable when game starts/restarts
+                     if (gameState === 'playing') {
+                         canvas.setAttribute('tabindex', '0'); 
+                         canvas.focus();
+                     }
                      window.addEventListener('keydown', handleKeyDown);
                      console.log("Keydown listener attached");
                 }
@@ -525,27 +629,18 @@
                     window.removeEventListener('keydown', handleKeyDown);
                     console.log("Keydown listener removed");
                 }
-            }, [gameState]); // Depend only on gameState
+            }, [gameState]); // Rerun when gameState changes to manage focus/listener
 
-            useEffect(() => {
-                if (lives <= 0 && gameState === 'playing') { 
-                    console.log("Game Over condition met (lives <= 0)");
-                    setGameState('gameover');
-                }
-            }, [lives, gameState]);
-
+            // Effect l load round 1 f l'wl
              useEffect(() => {
-                 let count = 0;
-                 mapState.forEach(row => row.forEach(cell => { if (cell === 0) count++; }));
-                 setPelletsRemaining(count);
-                 console.log("Initial pellet count:", count);
-             }, []); 
+                 console.log("Initial load effect: Loading round 1");
+                 loadRoundData(1); // Load map 1 data on initial mount
+             }, [loadRoundData]); // Depend on loadRoundData
 
 
             // --- Wallet/Payment Functions ---
-             const handleConnectWallet = async () => {
-                setIsProcessing(true);
-                setStatusMessage('1/3: Locating provider...'); console.log("Connecting...");
+             const handleConnectWallet = async () => { /* ... kima kan ... */ 
+                setIsProcessing(true); setStatusMessage('1/3: Locating provider...'); console.log("Connecting...");
                 try {
                   const provider = await getProvider();
                   if (!provider) throw new Error('No provider. Use Farcaster client or wallet extension.');
@@ -555,7 +650,8 @@
                       const addr = accounts[0]; setUserAddress(addr); console.log("Account:", addr);
                       setStatusMessage('3/3: Getting user data...'); console.log("Getting user data...");
                       try {
-                          if (sdk && typeof sdk.getUserData === 'function') {
+                          // Try to get FID using the imported sdk object
+                          if (sdk && typeof sdk.getUserData === 'function') { 
                               const user = await sdk.getUserData();
                               if (user && user.fid) { setFid(user.fid); setStatusMessage(`✅ Connected! FID: ${user.fid}`); console.log("User:", user); } 
                               else { setFid(null); setStatusMessage(`✅ Connected: ${addr.slice(0,6)}...`); console.log("FID not available."); }
@@ -566,85 +662,121 @@
                 setIsProcessing(false);
              };
 
-             const handleStartOrRestart = async () => {
+             // MODIFIED: Starts round 1 only
+             const handlePayAndStart = async () => {
                 if (!userAddress) { setStatusMessage('Please connect wallet first.'); return; }
                 if (DEVELOPER_WALLET === '0xYourWalletAddressHere' || !DEVELOPER_WALLET.startsWith('0x')) { setStatusMessage('⚠️ Dev: Set valid wallet address!'); return; }
-                setIsProcessing(true); setStatusMessage('1/3: Locating provider...'); console.log("Starting/Restarting...");
+                setIsProcessing(true); setStatusMessage('1/3: Locating provider...'); console.log("Starting Match...");
                 try {
                   const provider = await getProvider();
                   if (!provider) throw new Error('No provider found.');
                   setStatusMessage('2/3: Sending payment...'); console.log("Sending payment...");
                   const hash = await provider.request({ method: 'eth_sendTransaction', params: [{ from: userAddress, to: DEVELOPER_WALLET, value: parseEther(GAME_FEE_ETH) }] });
-                  setStatusMessage('✅ Payment complete! Starting...'); console.log("TX Hash:", hash);
-                  setScore(0); setLives(MAX_LIVES); setMapState(JSON.parse(JSON.stringify(currentMapData.map))); 
-                  playerRef.current.x = currentMapData.playerStart.x * gridSize + gridSize / 2; playerRef.current.y = currentMapData.playerStart.y * gridSize + gridSize / 2;
-                  playerRef.current.dx = 0; playerRef.current.dy = 0; playerRef.current.nextDx = 0; playerRef.current.nextDy = 0;
-                  ghostsRef.current.forEach((g, i) => { const s = currentMapData.ghostStart[i]; g.x = s.x * gridSize + gridSize / 2; g.y = s.y * gridSize + gridSize / 2; g.isFrightened = false; g.color = g.originalColor; g.isInBox = true; g.leaveBoxTimer = Math.random() * 120 + 60; });
-                  setGhostStates(ghostsRef.current.map(g => ({ id: g.originalColor, isFrightened: false, x: g.x, y: g.y, color: g.color })));
-                  let pCount = 0; mapState.forEach(r => r.forEach(c => { if (c === 0) pCount++; })); setPelletsRemaining(pCount);
-                  setTimeout(() => { setGameState('playing'); setIsProcessing(false); setStatusMessage(''); if(canvasRef.current) canvasRef.current.focus(); }, 1000);
-                } catch (e) { console.error('Start/Restart error:', e); setStatusMessage(`❌ Failed: ${e.message.split('.')[0]}.`); setIsProcessing(false); }
+                  setStatusMessage('✅ Payment complete! Starting Round 1...'); console.log("TX Hash:", hash);
+                  
+                  // Reset score/lives for a new match
+                  setScore(0); 
+                  setLives(MAX_LIVES); 
+                  
+                  // Load round 1 data
+                  loadRoundData(1); 
+
+                  setTimeout(() => { 
+                      setGameState('playing'); // Start the game loop
+                      setIsProcessing(false); 
+                      setStatusMessage(''); 
+                      if(canvasRef.current) canvasRef.current.focus(); 
+                  }, 1000); 
+                } catch (e) { console.error('Start error:', e); setStatusMessage(`❌ Failed: ${e.message.split('.')[0]}.`); setIsProcessing(false); }
              };
+
+             // NEW FUNCTION: Handle "Next Round" button
+             const handleNextRound = () => {
+                  console.log(`Starting next round: ${currentRound + 1}`);
+                  loadRoundData(currentRound + 1); // Load next round's data
+                  setGameState('playing'); // Resume game loop
+                  if(canvasRef.current) canvasRef.current.focus(); 
+             };
+
 
             // --- UI Rendering ---
             if (gameState === 'home') {
                 const isWalletConnected = !!userAddress;
-                 // HNA ZDNA L-BACKGROUND IMAGE
                  return createElement('div', { 
-                        className: "min-h-screen flex flex-col items-center justify-center p-4 text-center relative home-overlay", // Zdna relative w home-overlay
-                        style: {
-                            backgroundImage: `url('image_e58548.png')`, // L-IMAGE LI SIFTI
-                            backgroundSize: 'cover',
-                            backgroundPosition: 'center',
-                            backgroundRepeat: 'no-repeat'
-                        }
+                        className: "min-h-screen flex flex-col items-center justify-center p-4 text-center relative home-overlay", 
+                        style: { backgroundImage: `url('image_e58548.png')`, backgroundSize: 'cover', backgroundPosition: 'center', backgroundRepeat: 'no-repeat' }
                     }, 
-                    // Content wrapped f div jdid bach ywli fog l'overlay
                     createElement('div', {className: "home-content w-full max-w-xs"}, 
                         createElement('h1', { className: "text-5xl font-bold arcade-header tracking-tight mb-4" }, "Pixel Muncher"),
-                        createElement('h2', { className: "text-xl text-cyan-300 mb-8" }, ""), // 7ydna ljumla
+                        createElement('h2', { className: "text-xl text-cyan-300 mb-8" }, ""), // Khawia
                         createElement('div', { className: "flex flex-col gap-4 w-full" },
                             createElement('button', {
                                onClick: handleConnectWallet, disabled: isProcessing || isWalletConnected,
                                className: "secondary-button w-full disabled:opacity-50 disabled:cursor-not-allowed"
                             }, isWalletConnected ? `✅ Connected: ${userAddress.slice(0,6)}...` : 'Connect Wallet'),
+                            // MODIFIED: Changed function call to handlePayAndStart
                             createElement('button', {
-                               onClick: handleStartOrRestart, disabled: !isWalletConnected || isProcessing,
+                               onClick: handlePayAndStart, disabled: !isWalletConnected || isProcessing,
                                className: "primary-button w-full disabled:opacity-50 disabled:cursor-not-allowed"
                             }, isProcessing ? statusMessage : `Pay ${GAME_FEE_ETH} ETH & Play`),
                         ),
                         statusMessage && !isProcessing && createElement('div', {
-                            className: `mt-6 p-3 rounded-lg font-semibold text-sm w-full ${ // 7ydna max-w-xs mn hna
+                            className: `mt-6 p-3 rounded-lg font-semibold text-sm w-full ${ 
                             statusMessage.includes('Error') || statusMessage.includes('failed') || statusMessage.includes('⚠️') || statusMessage.includes('❌') ? 'bg-red-500/80' : 
                             statusMessage.includes('✅') ? 'bg-green-500/80' : 'bg-blue-500/80'}`
                         }, statusMessage)
-                    ) // Sddina home-content div
+                    ) 
+                 );
+            }
+
+            // MODIFIED: Added separate modal for round_won
+            if (gameState === 'round_won') {
+                 return createElement('div', { id:"roundWonModal", className: "modal", style: { display: 'flex' } }, 
+                     createElement('div', { className: "modal-content" },
+                         createElement('h2', { className: "text-3xl font-bold mb-4 text-green-400" }, `Round ${currentRound} Complete!`),
+                         createElement('p', { className: "text-lg mb-6" }, `Current Score: ${score}`),
+                         createElement('button', { 
+                             id:"nextRoundButton", 
+                             onClick: handleNextRound, // N-call-iw l-function l-jdida
+                             className: "secondary-button w-full" // Button khdr db
+                         }, `Start Round ${currentRound + 1}`)
+                     )
                  );
             }
 
             if (gameState === 'gameover' || gameState === 'gamewon') {
-                 return createElement('div', { id:"gameModal", className: "modal", style: { display: 'flex' } }, 
+                 return createElement('div', { id:"gameEndModal", className: "modal", style: { display: 'flex' } }, 
                      createElement('div', { className: "modal-content" },
-                         createElement('h2', { id: "modalTitle", className: "text-3xl font-bold mb-4" }, gameState === 'gamewon' ? '🎉 You Won! 🎉' : 'Game Over!'),
+                         createElement('h2', { id: "modalTitle", className: "text-3xl font-bold mb-4" }, gameState === 'gamewon' ? '🎉 You Won the Match! 🎉' : 'Game Over!'),
                          createElement('p', { id:"modalScore", className: "text-lg mb-6" }, `Final Score: ${score}`),
                          createElement('button', { 
-                             id:"restartButton", onClick: handleStartOrRestart, disabled: isProcessing,
+                             id:"restartButton", 
+                             onClick: handlePayAndStart, // N-call-iw l-function dyal restart kaml
+                             disabled: isProcessing, 
                              className: "primary-button w-full" 
                          }, isProcessing ? statusMessage : `Pay ${GAME_FEE_ETH} ETH & Play Again`)
                      )
                  );
             }
 
-            // Playing State UI
+            // Playing State UI (ZDNA ROUND NUMBER)
             return createElement('div', { className: "flex flex-col items-center w-full max-w-[420px]" }, 
                 createElement('header', { className: "text-center mb-2" },
                    createElement('h1', { className: "text-3xl font-bold arcade-header tracking-tight" }, "Pixel Muncher")
                 ),
+                // ZDNA ROUND NUMBER HNA
                 createElement('div', { className: "flex justify-between w-full text-lg mb-2 px-1" },
                     createElement('div', { className: "font-semibold" }, 'Score: ', createElement('span', { id: "score", className: "text-yellow-400" }, score)),
+                    createElement('div', { className: "font-semibold" }, 'Round: ', createElement('span', { id: "round", className: "text-green-400" }, currentRound)), // HNA ZDNAH
                     createElement('div', { className: "font-semibold" }, 'Lives: ', createElement('span', { id: "lives", className: "text-red-500" }, lives))
                 ),
-                createElement('canvas', { ref: canvasRef, id: "gameCanvas", width: mapWidth * gridSize, height: mapHeight * gridSize }),
+                // Canvas needs specific dimensions based on loaded map
+                 createElement('canvas', { 
+                    ref: canvasRef, 
+                    id: "gameCanvas", 
+                    width: mapWidth * gridSize, 
+                    height: mapHeight * gridSize 
+                }),
                 createElement('div', { className: "mt-3 text-center text-sm text-gray-400" },
                   createElement('p', null, 'Use ', createElement('span', {className: "text-yellow-400 font-bold"}, 'Arrow Keys'), ' to move.')
                 )
