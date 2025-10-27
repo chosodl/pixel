@@ -137,11 +137,74 @@
         const DEVELOPER_WALLET = '0x0e315015a4ee8d5d6c4b43e300df76b965d55bdd'; 
         const MAX_LIVES = 3;
 
-        // --- Maps Data ---
-        const map1 = [[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[1,2,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,2,1],[1,0,1,1,0,1,1,1,1,0,1,0,1,1,1,1,0,1,1,0,1],[1,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,1],[1,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,1],[1,0,1,1,0,1,3,3,3,3,3,3,3,3,3,1,0,1,1,0,1],[1,0,1,1,0,1,3,1,1,1,1,1,1,1,3,1,0,1,1,0,1],[1,0,0,0,0,1,3,1,3,3,3,3,3,1,3,1,0,0,0,0,1],[1,1,1,1,0,1,3,1,3,3,3,3,3,1,3,1,0,1,1,1,1],[3,3,3,1,0,1,3,1,1,1,1,1,1,1,3,1,0,1,3,3,3],[1,1,1,1,0,1,3,3,3,3,3,3,3,3,3,1,0,1,1,1,1],[1,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,1],[1,0,1,1,0,1,1,1,1,0,1,0,1,1,1,1,0,1,1,0,1],[1,0,1,1,0,0,0,0,0,0,3,0,0,0,0,0,0,1,1,0,1],[1,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,1],[1,0,1,1,1,1,0,0,0,0,1,0,0,0,0,1,1,1,1,0,1],[1,2,0,0,0,0,0,1,1,0,1,0,1,1,0,0,0,0,0,2,1],[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]];
-        const map2 = [[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[1,2,0,0,1,1,1,0,0,0,1,0,0,0,1,1,1,0,0,2,1],[1,0,1,0,0,0,0,0,1,0,1,0,1,0,0,0,0,0,1,0,1],[1,0,1,0,1,1,0,1,1,0,0,0,1,1,0,1,1,0,1,0,1],[1,0,0,0,1,1,0,1,1,1,1,1,1,1,0,1,1,0,0,0,1],[1,1,1,0,0,0,0,3,3,3,3,3,3,3,0,0,0,0,1,1,1],[1,0,0,0,1,1,0,1,1,1,1,1,1,1,0,1,1,0,0,0,1],[1,0,1,0,1,1,0,1,3,3,3,3,3,1,0,1,1,0,1,0,1],[1,0,1,0,0,0,0,1,3,3,3,3,3,1,0,0,0,0,1,0,1],[3,0,1,1,1,1,0,1,1,1,1,1,1,1,0,1,1,1,1,0,3],[1,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,1],[1,0,1,1,0,1,1,1,1,0,1,0,1,1,1,1,0,1,1,0,1],[1,0,0,0,0,1,1,0,0,0,3,0,0,0,1,1,0,0,0,0,1],[1,1,0,1,0,0,0,0,1,1,1,1,1,0,0,0,0,1,0,1,1],[1,0,0,1,0,1,0,1,1,0,0,0,1,1,0,1,0,1,0,0,1],[1,0,1,1,0,1,0,0,0,0,1,0,0,0,0,1,0,1,1,0,1],[1,2,0,0,0,1,1,1,0,1,1,1,0,1,1,1,0,0,0,2,1],[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]];
-        const map3 = [[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],[1,0,1,1,1,1,0,1,1,1,1,1,1,1,0,1,1,1,1,0,1],[1,0,1,1,1,1,0,1,1,1,1,1,1,1,0,1,1,1,1,0,1],[1,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,1],[1,0,1,1,1,1,0,1,3,3,3,3,3,1,0,1,1,1,1,0,1],[1,0,1,1,1,1,0,1,3,3,3,3,3,1,0,1,1,1,1,0,1],[1,2,0,0,0,0,0,1,3,3,3,3,3,1,0,0,0,0,0,2,1],[1,1,1,1,1,1,0,1,1,1,1,1,1,1,0,1,1,1,1,1,1],[3,3,3,3,3,1,0,0,0,0,0,0,0,0,0,1,3,3,3,3,3],[1,1,1,1,1,1,0,1,1,1,1,1,1,1,0,1,1,1,1,1,1],[1,2,0,0,0,0,0,1,3,3,3,3,3,1,0,0,0,0,0,2,1],[1,0,1,1,1,1,0,1,3,3,3,3,3,1,0,1,1,1,1,0,1],[1,0,1,1,1,1,0,1,3,3,3,3,3,1,0,1,1,1,1,0,1],[1,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,1],[1,0,1,1,1,1,0,1,1,1,1,1,1,1,0,1,1,1,1,0,1],[1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]];
-        const allMaps = [ { map: map1, playerStart: { x: 10, y: 13 }, ghostStart: [ { x: 10, y: 7, color: '#EF4444', mode: 'direct'}, { x: 9, y: 8, color: '#F472B6', mode: 'ambush'}, { x: 10, y: 8, color: '#22D3EE', mode: 'direct'}, { x: 11, y: 8, color: '#F97316', mode: 'random'} ], ghostBoxExit: { x: 10, y: 6 } }, { map: map2, playerStart: { x: 10, y: 12 }, ghostStart: [ { x: 10, y: 7, color: '#EF4444', mode: 'direct'}, { x: 9, y: 8, color: '#F472B6', mode: 'ambush'}, { x: 10, y: 8, color: '#22D3EE', mode: 'direct'}, { x: 11, y: 8, color: '#F97316', mode: 'random'} ], ghostBoxExit: { x: 10, y: 6 } }, { map: map3, playerStart: { x: 10, y: 14 }, ghostStart: [ { x: 10, y: 6, color: '#EF4444', mode: 'direct'}, { x: 9, y: 7, color: '#F472B6', mode: 'ambush'}, { x: 10, y: 7, color: '#22D3EE', mode: 'direct'}, { x: 11, y: 7, color: '#F97316', mode: 'random'} ], ghostBoxExit: { x: 10, y: 5 } } ];
+        // --- Maps Data (BDDLNA CHI 7ITAN L 0/3) ---
+        // Maze layout: 1 = Wall, 0 = Pellet, 2 = Power Pellet, 3 = Empty
+        const map1 = [ // Map 1: Ft7na chwiya dyal triqan 7da l box
+            [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+            [1,2,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,2,1],
+            [1,0,1,1,0,1,1,1,1,0,1,0,1,1,1,1,0,1,1,0,1],
+            [1,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,1],
+            [1,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,1],
+            [1,0,1,1,0,1,3,3,3,3,3,3,3,3,3,1,0,1,1,0,1],
+            [1,0,1,1,0,0,3,1,1,1,1,1,1,1,3,0,0,1,1,0,1], // Changed 1s to 0s/3s near exit
+            [1,0,0,0,0,1,3,1,3,3,3,3,3,1,3,1,0,0,0,0,1], 
+            [1,1,1,1,0,1,3,1,3,3,3,3,3,1,3,1,0,1,1,1,1], 
+            [3,3,3,1,0,1,3,0,0,0,0,0,0,0,3,1,0,1,3,3,3], // Tunnel row, opened path below box
+            [1,1,1,1,0,1,3,3,3,3,3,3,3,3,3,1,0,1,1,1,1],
+            [1,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,1],
+            [1,0,1,1,0,1,1,1,1,0,1,0,1,1,1,1,0,1,1,0,1],
+            [1,0,1,1,0,0,0,0,0,0,3,0,0,0,0,0,0,1,1,0,1], 
+            [1,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,0,0,0,0,1],
+            [1,0,1,1,1,1,0,0,0,0,1,0,0,0,0,1,1,1,1,0,1],
+            [1,2,0,0,0,0,0,1,1,0,1,0,1,1,0,0,0,0,0,2,1],
+            [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
+        ];
+         const map2 = [ // Map 2: Ft7na triqan f l wst w lfoq
+            [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+            [1,2,0,0,1,1,1,0,0,0,1,0,0,0,1,1,1,0,0,2,1],
+            [1,0,1,0,0,0,0,0,1,0,1,0,1,0,0,0,0,0,1,0,1],
+            [1,0,1,0,1,1,0,1,1,0,0,0,1,1,0,1,1,0,1,0,1],
+            [1,0,0,0,1,1,0,1,1,1,0,1,1,1,0,1,1,0,0,0,1], // Opened center top
+            [1,1,1,0,0,0,0,3,3,3,3,3,3,3,0,0,0,0,1,1,1],
+            [1,0,0,0,1,1,0,0,1,1,1,1,1,0,0,1,1,0,0,0,1], // Opened near box
+            [1,0,1,0,1,1,0,1,3,3,3,3,3,1,0,1,1,0,1,0,1], 
+            [1,0,1,0,0,0,0,1,3,3,3,3,3,1,0,0,0,0,1,0,1], 
+            [3,0,1,1,1,1,0,0,0,0,0,0,0,0,0,1,1,1,1,0,3], // Tunnel row, opened path below box
+            [1,0,0,0,0,0,0,1,1,1,1,1,1,1,0,0,0,0,0,0,1], // Opened bottom center
+            [1,0,1,1,0,1,1,1,1,0,1,0,1,1,1,1,0,1,1,0,1],
+            [1,0,0,0,0,1,1,0,0,0,3,0,0,0,1,1,0,0,0,0,1], 
+            [1,1,0,1,0,0,0,0,1,1,1,1,1,0,0,0,0,1,0,1,1],
+            [1,0,0,1,0,1,0,1,1,0,0,0,1,1,0,1,0,1,0,0,1],
+            [1,0,1,1,0,1,0,0,0,0,1,0,0,0,0,1,0,1,1,0,1],
+            [1,2,0,0,0,1,1,1,0,1,1,1,0,1,1,1,0,0,0,2,1],
+            [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
+        ];
+         const map3 = [ // Map 3: Ft7na bzaf dyal triqan f l wst
+            [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
+            [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+            [1,0,1,1,1,1,0,1,1,1,1,1,1,1,0,1,1,1,1,0,1],
+            [1,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,1], // Opened vertical path
+            [1,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,1], // Opened horizontal path
+            [1,0,1,0,1,1,0,1,3,3,3,3,3,1,0,1,1,0,1,0,1], 
+            [1,0,1,0,1,1,0,1,3,3,3,3,3,1,0,1,1,0,1,0,1], 
+            [1,2,0,0,1,1,0,1,3,3,3,3,3,1,0,1,1,0,0,2,1], // Opened path near Power Pellet
+            [1,1,1,0,1,1,0,1,1,1,1,1,1,1,0,1,1,0,1,1,1], 
+            [3,3,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,3,3], // Tunnel row, more open
+            [1,1,1,0,1,1,0,1,1,1,1,1,1,1,0,1,1,0,1,1,1], 
+            [1,2,0,0,1,1,0,1,3,3,3,3,3,1,0,1,1,0,0,2,1], // Opened path near Power Pellet
+            [1,0,1,0,1,1,0,1,3,3,3,3,3,1,0,1,1,0,1,0,1], 
+            [1,0,1,0,1,1,0,1,3,3,3,3,3,1,0,1,1,0,1,0,1], 
+            [1,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,0,0,0,1], // Opened horizontal path
+            [1,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,1], // Opened vertical path
+            [1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1],
+            [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
+        ];
+        
+        const allMaps = [ 
+            { map: map1, playerStart: { x: 10, y: 13 }, ghostStart: [ { x: 10, y: 7, color: '#EF4444', mode: 'direct'}, { x: 9, y: 8, color: '#F472B6', mode: 'ambush'}, { x: 10, y: 8, color: '#22D3EE', mode: 'direct'}, { x: 11, y: 8, color: '#F97316', mode: 'random'} ], ghostBoxExit: { x: 10, y: 6 } }, 
+            { map: map2, playerStart: { x: 10, y: 12 }, ghostStart: [ { x: 10, y: 7, color: '#EF4444', mode: 'direct'}, { x: 9, y: 8, color: '#F472B6', mode: 'ambush'}, { x: 10, y: 8, color: '#22D3EE', mode: 'direct'}, { x: 11, y: 8, color: '#F97316', mode: 'random'} ], ghostBoxExit: { x: 10, y: 6 } }, 
+            { map: map3, playerStart: { x: 10, y: 14 }, ghostStart: [ { x: 10, y: 6, color: '#EF4444', mode: 'direct'}, { x: 9, y: 7, color: '#F472B6', mode: 'ambush'}, { x: 10, y: 7, color: '#22D3EE', mode: 'direct'}, { x: 11, y: 7, color: '#F97316', mode: 'random'} ], ghostBoxExit: { x: 10, y: 5 } } 
+        ];
         let currentMapData = allMaps[0]; 
         let mapWidth = 0; 
         let mapHeight = 0; 
@@ -182,7 +245,10 @@
                  for (const corner of corners) {
                     const gridX = Math.floor(corner.x / gridSize);
                     const gridY = Math.floor(corner.y / gridSize);
-                    const tunnelRowY = (allMaps[currentRound - 1]?.map === map1 || allMaps[currentRound - 1]?.map === map2) ? 9 : (allMaps[currentRound - 1]?.map === map3) ? 9 : -1; 
+                    // BDIL: Updated tunnel logic based on currentRound
+                    let tunnelRowY = -1;
+                    if (currentRound === 1 || currentRound === 2) tunnelRowY = 9;
+                    else if (currentRound === 3) tunnelRowY = 9; // Map 3 tunnel row updated
                     
                     if (gridX < 0 || gridX >= mapWidth || gridY < 0 || gridY >= mapHeight) {
                         if (gridY === tunnelRowY && (gridX < 0 || gridX >= mapWidth)) continue; // Allow tunnel wrapping
@@ -209,176 +275,30 @@
             }, []); 
 
             // RJ3NA L-CHECK DYAL COLLISION QBL MA NBDLO DIRECTION W QBL MA NT7RKO
-            const updatePlayer = useCallback(() => {
-                if (!canvasRef.current) return; 
-                const player = playerRef.current;
-                
-                // 7awl tbdl l'direction
-                if (!checkCollision(player, player.nextDx, player.nextDy)) {
-                    player.dx = player.nextDx; 
-                    player.dy = player.nextDy;
-                }
-                
-                // T7rk ila l'direction l'7alia ma mblokiach
-                if (!checkCollision(player, player.dx, player.dy)) {
-                    player.x += player.dx; 
-                    player.y += player.dy;
-                } else {
-                    // Ila mbloki, wqef f had direction
-                    player.dx = 0; 
-                    player.dy = 0;
-                }
-                
-                // Tunnel wrapping
-                const canvasWidth = canvasRef.current.width;
-                if (player.x < -player.radius) player.x = canvasWidth + player.radius;
-                if (player.x > canvasWidth + player.radius) player.x = -player.radius;
-
-                // Pellet eating (kima kan)
-                const gridX = Math.floor(player.x / gridSize); const gridY = Math.floor(player.y / gridSize);
-                if (gridX >= 0 && gridX < mapWidth && gridY >= 0 && gridY < mapHeight) {
-                    const cell = mapState?.[gridY]?.[gridX]; 
-                    if (cell === 0 || cell === 2) { 
-                        setMapState(prevMap => { /* ... */ const newMap = [...prevMap]; newMap[gridY] = [...newMap[gridY]]; newMap[gridY][gridX] = 3; return newMap; }); 
-                        if(cell === 0) { setScore(s => s + 10); setPelletsRemaining(p => p - 1); } 
-                        else { setScore(s => s + 50); ghostsRef.current.forEach(g => { g.isFrightened = true; g.frightenedTimer = 300; }); setGhostStates(prev => prev.map(gs => ({...gs, isFrightened: true, color: '#3B82F6'}))); }
-                    }
-                }
+            const updatePlayer = useCallback(() => { /* ... kima kan f version l msll7a ... */ 
+                if (!canvasRef.current) return; const p = playerRef.current; if (!checkCollision(p, p.nextDx, p.nextDy)) { p.dx = p.nextDx; p.dy = p.nextDy; }
+                if (!checkCollision(p, p.dx, p.dy)) { p.x += p.dx; p.y += p.dy; } else { p.dx = 0; p.dy = 0; }
+                const cw = canvasRef.current.width; if (p.x < -p.radius) p.x = cw + p.radius; if (p.x > cw + p.radius) p.x = -p.radius;
+                const gx = Math.floor(p.x / gridSize); const gy = Math.floor(p.y / gridSize);
+                if (gx >= 0 && gx < mapWidth && gy >= 0 && gy < mapHeight) { const cell = mapState?.[gy]?.[gx]; if (cell === 0 || cell === 2) { setMapState(prevMap => { const nm = [...prevMap]; nm[gy] = [...nm[gy]]; nm[gy][gx] = 3; return nm; }); if(cell === 0) { setScore(s => s + 10); setPelletsRemaining(p => p - 1); } else { setScore(s => s + 50); ghostsRef.current.forEach(g => { g.isFrightened = true; g.frightenedTimer = 300; }); setGhostStates(prev => prev.map(gs => ({...gs, isFrightened: true, color: '#3B82F6'}))); } } }
             }, [checkCollision, mapState]); 
 
              // RJ3NA L-CHECK DYAL COLLISION F AI W F L-MOVEMENT + SL7NA LOGIC DYAL L-KHROJ
-             const updateGhosts = useCallback(() => {
-                if (!canvasRef.current) return; 
-                const player = playerRef.current;
-                const ghosts = ghostsRef.current;
-                let ghostStatesChanged = false; 
-                
-                ghosts.forEach(ghost => {
-                    let stateNeedsUpdate = false; 
-                    
-                    // Frightened logic (kima kan)
-                    if (ghost.isFrightened) { ghost.frightenedTimer--; if (ghost.color !== '#3B82F6') { ghost.color = '#3B82F6'; stateNeedsUpdate = true; } if (ghost.frightenedTimer <= 0) { ghost.isFrightened = false; ghost.color = ghost.originalColor; stateNeedsUpdate = true; } } 
-                    else if (ghost.color !== ghost.originalColor) { ghost.color = ghost.originalColor; stateNeedsUpdate = true; }
-                    
-                    // SL7NA LOGIC DYAL L-KHROJ MN L-BOX
-                     if (ghost.isInBox) {
-                        ghost.leaveBoxTimer--;
-                        if (ghost.leaveBoxTimer <= 0) {
-                            const exit = allMaps[currentRound - 1].ghostBoxExit; 
-                            const targetExitX = exit.x * gridSize + gridSize / 2;
-                            const targetExitY = exit.y * gridSize + gridSize / 2;
-                            
-                            // 7rk l ghost vers l exit
-                            let moveX = 0;
-                            let moveY = 0;
-                            if (Math.abs(ghost.x - targetExitX) > ghost.speed / 2) {
-                                moveX = Math.sign(targetExitX - ghost.x) * ghost.speed;
-                            } else {
-                                ghost.x = targetExitX; // Snap l X
-                            }
-                            if (Math.abs(ghost.y - targetExitY) > ghost.speed / 2) {
-                                moveY = Math.sign(targetExitY - ghost.y) * ghost.speed;
-                            } else {
-                                ghost.y = targetExitY; // Snap l Y
-                            }
-
-                            // Prioritize vertical movement if needed
-                            if (moveY !== 0) {
-                                ghost.dx = 0;
-                                ghost.dy = moveY;
-                            } else if (moveX !== 0) {
-                                ghost.dx = moveX;
-                                ghost.dy = 0;
-                            } else {
-                                // Wsl l exit, khrej lfoq
-                                ghost.dx = 0;
-                                ghost.dy = -ghost.speed; // Mchi lfoq
-                                ghost.isInBox = false; // Safi khrej
-                                console.log(`Ghost ${ghost.originalColor} leaving box`);
-                            }
-                            
-                            // Move ghost (no collision check inside box assumed)
-                            ghost.x += ghost.dx;
-                            ghost.y += ghost.dy;
-                            stateNeedsUpdate = true; // Position updated
-                            return; // Skip normal AI
-
-                        } else {
-                            // Baqi f l box, ma t7rkch
-                            if (ghost.x !== ghost.startX || ghost.y !== ghost.startY) { ghost.x = ghost.startX; ghost.y = ghost.startY; stateNeedsUpdate = true; }
-                            return; 
-                        }
-                    }
-                    
-                    // --- AI Logic (RJ3NA CHECK COLLISION) ---
-                    const directions = [ { dx: ghost.speed, dy: 0 }, { dx: -ghost.speed, dy: 0 }, { dx: 0, dy: ghost.speed }, { dx: 0, dy: -ghost.speed } ];
-                    let bestDir = null;
-
-                    if (!ghost.isFrightened) { // CHASE
-                        let targetX = player.x; let targetY = player.y;
-                         if (ghost.chaseMode === 'ambush') { /* ... kima kan ... */ let pDx = 0, pDy = 0; if (player.dx > 0) pDx = 1; if (player.dx < 0) pDx = -1; if (player.dy > 0) pDy = 1; if (player.dy < 0) pDy = -1; if(pDx !== 0 || pDy !== 0) { targetX = player.x + (pDx * gridSize * 4); targetY = player.y + (pDy * gridSize * 4); } } 
-                         else if (ghost.chaseMode === 'random') { /* ... kima kan ... */ const d = Math.hypot(player.x - ghost.x, player.y - ghost.y); if (d < gridSize * 8) { targetX = gridSize; targetY = canvasRef.current.height - gridSize; } }
-                         
-                        let minDistance = Infinity;
-                        for (const dir of directions) {
-                            // Ma trje3ch llor ila kan momkin
-                            if ((dir.dx === -ghost.dx && dir.dy === -ghost.dy) && (ghost.dx !== 0 || ghost.dy !== 0)) continue; 
-                            // RJ3NA L-CHECK
-                             if (!checkCollision(ghost, dir.dx, dir.dy)) { 
-                                const newX = ghost.x + dir.dx; const newY = ghost.y + dir.dy;
-                                const distance = Math.hypot(targetX - newX, targetY - newY);
-                                if (distance < minDistance) { minDistance = distance; bestDir = dir; }
-                            }
-                        }
-                    } else { // FLEE
-                        let maxDistance = -1;
-                        for (const dir of directions) {
-                           if ((dir.dx === -ghost.dx && dir.dy === -ghost.dy) && (ghost.dx !== 0 || ghost.dy !== 0)) continue; 
-                           // RJ3NA L-CHECK
-                            if (!checkCollision(ghost, dir.dx, dir.dy)) {
-                                const newX = ghost.x + dir.dx; const newY = ghost.y + dir.dy;
-                                const distance = Math.hypot(player.x - newX, player.y - newY);
-                                if (distance > maxDistance) { maxDistance = distance; bestDir = dir; }
-                           }
-                        }
-                    }
-
-                     let moved = false;
-                     if (bestDir) { 
-                         ghost.dx = bestDir.dx; 
-                         ghost.dy = bestDir.dy; 
-                     } else { 
-                         // Mbloki, 7awl trje3 llor
-                         if (!checkCollision(ghost, -ghost.dx, -ghost.dy)) {
-                            ghost.dx = -ghost.dx;
-                            ghost.dy = -ghost.dy;
-                         } else { // Mbloki mn kolchi
-                            ghost.dx = 0; 
-                            ghost.dy = 0; 
-                         }
-                     }
-
-                     // T7RK ILA MA KANCH MBLOKI
-                      if (!checkCollision(ghost, ghost.dx, ghost.dy)) {
-                         ghost.x += ghost.dx; 
-                         ghost.y += ghost.dy; 
-                         moved = true; 
-                      } else {
-                         // Mbloki f l'ittijah l-mkhtar, wqef db
-                         ghost.dx = 0;
-                         ghost.dy = 0;
-                      }
-                     
-                    // Tunnel wrapping (kima kan)
-                    const canvasWidth = canvasRef.current.width;
-                    if (ghost.x < -ghost.radius) ghost.x = canvasWidth + ghost.radius;
-                    if (ghost.x > canvasWidth + ghost.radius) ghost.x = -ghost.radius;
-
-                    if (moved || stateNeedsUpdate) { ghostStatesChanged = true; }
+             const updateGhosts = useCallback(() => { /* ... kima kan f version l msll7a ... */ 
+                if (!canvasRef.current) return; const player = playerRef.current; const ghosts = ghostsRef.current; let changed = false; 
+                ghosts.forEach(g => { let needsUpdate = false; 
+                    if (g.isFrightened) { g.frightenedTimer--; if (g.color !== '#3B82F6') { g.color = '#3B82F6'; needsUpdate = true; } if (g.frightenedTimer <= 0) { g.isFrightened = false; g.color = g.originalColor; needsUpdate = true; } } 
+                    else if (g.color !== g.originalColor) { g.color = g.originalColor; needsUpdate = true; }
+                    if (g.isInBox) { g.leaveBoxTimer--; if (g.leaveBoxTimer <= 0) { const exit = allMaps[currentRound - 1].ghostBoxExit; const tx = exit.x * gridSize + gridSize / 2; const ty = exit.y * gridSize + gridSize / 2; let mx = 0; let my = 0; if (Math.abs(g.x - tx) > g.speed / 2) mx = Math.sign(tx - g.x) * g.speed; else g.x = tx; if (Math.abs(g.y - ty) > g.speed / 2) my = Math.sign(ty - g.y) * g.speed; else g.y = ty; if (my !== 0) { g.dx = 0; g.dy = my; } else if (mx !== 0) { g.dx = mx; g.dy = 0; } else { g.dx = 0; g.dy = -g.speed; g.isInBox = false; console.log(`Ghost ${g.originalColor} leaving`); } g.x += g.dx; g.y += g.dy; needsUpdate = true; return; } else { if (g.x !== g.startX || g.y !== g.startY) { g.x = g.startX; g.y = g.startY; needsUpdate = true; } return; } }
+                    const dirs = [ { dx: g.speed, dy: 0 }, { dx: -g.speed, dy: 0 }, { dx: 0, dy: g.speed }, { dx: 0, dy: -g.speed } ]; let bestDir = null;
+                    if (!g.isFrightened) { let tx = player.x, ty = player.y; if (g.chaseMode === 'ambush') { let pdx=0,pdy=0; if(player.dx > 0)pdx=1;if(player.dx<0)pdx=-1;if(player.dy>0)pdy=1;if(player.dy<0)pdy=-1; if(pdx!==0||pdy!==0){tx=player.x+(pdx*gridSize*4);ty=player.y+(pdy*gridSize*4);}} else if (g.chaseMode === 'random') { const d = Math.hypot(player.x-g.x, player.y-g.y); if(d<gridSize*8){tx=gridSize;ty=canvasRef.current.height-gridSize;}} let minDist=Infinity; for(const dir of dirs){ if((dir.dx===-g.dx && dir.dy===-g.dy)&&(g.dx!==0||g.dy!==0)) continue; if(!checkCollision(g,dir.dx,dir.dy)){ const nx=g.x+dir.dx, ny=g.y+dir.dy; const dist=Math.hypot(tx-nx,ty-ny); if(dist<minDist){minDist=dist;bestDir=dir;}}} } 
+                    else { let maxDist=-1; for(const dir of dirs){ if((dir.dx===-g.dx && dir.dy===-g.dy)&&(g.dx!==0||g.dy!==0)) continue; if(!checkCollision(g,dir.dx,dir.dy)){ const nx=g.x+dir.dx, ny=g.y+dir.dy; const dist=Math.hypot(player.x-nx,player.y-ny); if(dist>maxDist){maxDist=dist;bestDir=dir;}}} }
+                    let moved = false; if (bestDir) { g.dx = bestDir.dx; g.dy = bestDir.dy; } else { if (!checkCollision(g, -g.dx, -g.dy)) { g.dx = -g.dx; g.dy = -g.dy; } else { g.dx = 0; g.dy = 0; } }
+                    if (!checkCollision(g, g.dx, g.dy)) { g.x += g.dx; g.y += g.dy; moved = true; } else { g.dx = 0; g.dy = 0; }
+                    const cw = canvasRef.current.width; if (g.x < -g.radius) g.x = cw + g.radius; if (g.x > cw + g.radius) g.x = -g.radius;
+                    if (moved || needsUpdate) changed = true; 
                 }); 
-                 if (ghostStatesChanged) {
-                    setGhostStates(ghostsRef.current.map(g => ({ id: g.originalColor, isFrightened: g.isFrightened, x: g.x, y: g.y, color: g.color })));
-                 }
+                if (changed) { setGhostStates(ghostsRef.current.map(g => ({ id: g.originalColor, isFrightened: g.isFrightened, x: g.x, y: g.y, color: g.color }))); }
             }, [checkCollision, currentRound]); 
 
             const checkGhostPlayerCollision = useCallback(() => { /* ... kima kan ... */ 
