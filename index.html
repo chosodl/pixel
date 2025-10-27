@@ -172,9 +172,9 @@
             const canvasRef = useRef(null);
             const animationFrameId = useRef(null); 
 
-            // --- Helper: Check Collision (7YDNA L-CHECK DYAL L7ITAN MN HNA) ---
+            // --- Helper: Check Collision (RJ3NA L-CHECK DYAL L7ITAN) ---
              const checkCollision = useCallback((entity, dx, dy) => {
-                 // Ghir l-boundaries dyal l-canvas (w nkhliw tunnel)
+                 if (!mapState) return true; // Blocki ila l'map ma wajdach
                  const checkX = entity.x + dx;
                  const checkY = entity.y + dy;
                  const radius = entity.radius;
@@ -182,16 +182,16 @@
                  for (const corner of corners) {
                     const gridX = Math.floor(corner.x / gridSize);
                     const gridY = Math.floor(corner.y / gridSize);
-                    const tunnelRowY = (allMaps[currentRound - 1]?.map === map1 || allMaps[currentRound - 1]?.map === map2) ? 9 : (allMaps[currentRound - 1]?.map === map3) ? 9 : -1;
+                    const tunnelRowY = (allMaps[currentRound - 1]?.map === map1 || allMaps[currentRound - 1]?.map === map2) ? 9 : (allMaps[currentRound - 1]?.map === map3) ? 9 : -1; 
+                    
                     if (gridX < 0 || gridX >= mapWidth || gridY < 0 || gridY >= mapHeight) {
                         if (gridY === tunnelRowY && (gridX < 0 || gridX >= mapWidth)) continue; // Allow tunnel wrapping
-                        // BDIL: Ila ma kan f tunnel, ma trje3ch true, khlih ydoz
-                        // return true; 
+                        return true; // Hit boundary
                     }
-                    // 7YDNA L-CHECK DYAL MAPSTATE === 1
-                    // if (mapState[gridY]?.[gridX] === 1) return true; 
+                    // RJ3NA L-CHECK DYAL L7ITAN (MAPSTATE === 1)
+                    if (mapState[gridY]?.[gridX] === 1) return true; 
                 }
-                return false; // Dima false (ma kaynch collision m3a l7it)
+                return false; // Makaynch collision
              }, [mapState, currentRound]); 
 
             // --- Game Logic Functions ---
@@ -208,18 +208,26 @@
                  if(canvasRef.current) { canvasRef.current.width = mapWidth * gridSize; canvasRef.current.height = mapHeight * gridSize; }
             }, []); 
 
-            // BDIL: 7ydna l-check dyal collision qbl ma n bdlo direction
+            // RJ3NA L-CHECK DYAL COLLISION QBL MA NBDLO DIRECTION W QBL MA NT7RKO
             const updatePlayer = useCallback(() => {
                 if (!canvasRef.current) return; 
                 const player = playerRef.current;
                 
-                // BDDEL DIRECTION NICHAN
-                player.dx = player.nextDx; 
-                player.dy = player.nextDy;
+                // 7awl tbdl l'direction
+                if (!checkCollision(player, player.nextDx, player.nextDy)) {
+                    player.dx = player.nextDx; 
+                    player.dy = player.nextDy;
+                }
                 
-                // T7RK DIMA
-                player.x += player.dx; 
-                player.y += player.dy;
+                // T7rk ila l'direction l'7alia ma mblokiach
+                if (!checkCollision(player, player.dx, player.dy)) {
+                    player.x += player.dx; 
+                    player.y += player.dy;
+                } else {
+                    // Ila mbloki, wqef f had direction
+                    player.dx = 0; 
+                    player.dy = 0;
+                }
                 
                 // Tunnel wrapping
                 const canvasWidth = canvasRef.current.width;
@@ -236,22 +244,73 @@
                         else { setScore(s => s + 50); ghostsRef.current.forEach(g => { g.isFrightened = true; g.frightenedTimer = 300; }); setGhostStates(prev => prev.map(gs => ({...gs, isFrightened: true, color: '#3B82F6'}))); }
                     }
                 }
-            }, [mapState]); // 7ydna checkCollision mn dependencies
+            }, [checkCollision, mapState]); 
 
-             // BDIL: 7ydna l-check dyal collision f AI w f l-movement
+             // RJ3NA L-CHECK DYAL COLLISION F AI W F L-MOVEMENT + SL7NA LOGIC DYAL L-KHROJ
              const updateGhosts = useCallback(() => {
                 if (!canvasRef.current) return; 
                 const player = playerRef.current;
                 const ghosts = ghostsRef.current;
                 let ghostStatesChanged = false; 
+                
                 ghosts.forEach(ghost => {
                     let stateNeedsUpdate = false; 
-                    if (ghost.isFrightened) { /* ... kima kan ... */ ghost.frightenedTimer--; if (ghost.color !== '#3B82F6') { ghost.color = '#3B82F6'; stateNeedsUpdate = true; } if (ghost.frightenedTimer <= 0) { ghost.isFrightened = false; ghost.color = ghost.originalColor; stateNeedsUpdate = true; } } 
+                    
+                    // Frightened logic (kima kan)
+                    if (ghost.isFrightened) { ghost.frightenedTimer--; if (ghost.color !== '#3B82F6') { ghost.color = '#3B82F6'; stateNeedsUpdate = true; } if (ghost.frightenedTimer <= 0) { ghost.isFrightened = false; ghost.color = ghost.originalColor; stateNeedsUpdate = true; } } 
                     else if (ghost.color !== ghost.originalColor) { ghost.color = ghost.originalColor; stateNeedsUpdate = true; }
                     
-                     if (ghost.isInBox) { /* ... kima kan ... */ ghost.leaveBoxTimer--; if (ghost.leaveBoxTimer <= 0) { ghost.isInBox = false; const exit = allMaps[currentRound - 1].ghostBoxExit; ghost.x = exit.x * gridSize + gridSize / 2; ghost.y = exit.y * gridSize + gridSize / 2; ghost.dx=0; ghost.dy=0; /* 7ydna direction lfoq */ } else { if (ghost.x !== ghost.startX || ghost.y !== ghost.startY) { ghost.x = ghost.startX; ghost.y = ghost.startY; stateNeedsUpdate = true; } return; } }
+                    // SL7NA LOGIC DYAL L-KHROJ MN L-BOX
+                     if (ghost.isInBox) {
+                        ghost.leaveBoxTimer--;
+                        if (ghost.leaveBoxTimer <= 0) {
+                            const exit = allMaps[currentRound - 1].ghostBoxExit; 
+                            const targetExitX = exit.x * gridSize + gridSize / 2;
+                            const targetExitY = exit.y * gridSize + gridSize / 2;
+                            
+                            // 7rk l ghost vers l exit
+                            let moveX = 0;
+                            let moveY = 0;
+                            if (Math.abs(ghost.x - targetExitX) > ghost.speed / 2) {
+                                moveX = Math.sign(targetExitX - ghost.x) * ghost.speed;
+                            } else {
+                                ghost.x = targetExitX; // Snap l X
+                            }
+                            if (Math.abs(ghost.y - targetExitY) > ghost.speed / 2) {
+                                moveY = Math.sign(targetExitY - ghost.y) * ghost.speed;
+                            } else {
+                                ghost.y = targetExitY; // Snap l Y
+                            }
+
+                            // Prioritize vertical movement if needed
+                            if (moveY !== 0) {
+                                ghost.dx = 0;
+                                ghost.dy = moveY;
+                            } else if (moveX !== 0) {
+                                ghost.dx = moveX;
+                                ghost.dy = 0;
+                            } else {
+                                // Wsl l exit, khrej lfoq
+                                ghost.dx = 0;
+                                ghost.dy = -ghost.speed; // Mchi lfoq
+                                ghost.isInBox = false; // Safi khrej
+                                console.log(`Ghost ${ghost.originalColor} leaving box`);
+                            }
+                            
+                            // Move ghost (no collision check inside box assumed)
+                            ghost.x += ghost.dx;
+                            ghost.y += ghost.dy;
+                            stateNeedsUpdate = true; // Position updated
+                            return; // Skip normal AI
+
+                        } else {
+                            // Baqi f l box, ma t7rkch
+                            if (ghost.x !== ghost.startX || ghost.y !== ghost.startY) { ghost.x = ghost.startX; ghost.y = ghost.startY; stateNeedsUpdate = true; }
+                            return; 
+                        }
+                    }
                     
-                    // --- AI Logic (7ydna checkCollision) ---
+                    // --- AI Logic (RJ3NA CHECK COLLISION) ---
                     const directions = [ { dx: ghost.speed, dy: 0 }, { dx: -ghost.speed, dy: 0 }, { dx: 0, dy: ghost.speed }, { dx: 0, dy: -ghost.speed } ];
                     let bestDir = null;
 
@@ -262,37 +321,53 @@
                          
                         let minDistance = Infinity;
                         for (const dir of directions) {
+                            // Ma trje3ch llor ila kan momkin
                             if ((dir.dx === -ghost.dx && dir.dy === -ghost.dy) && (ghost.dx !== 0 || ghost.dy !== 0)) continue; 
-                            // 7YD COLLISION CHECK HNA
-                            // if (!checkCollision(ghost, dir.dx, dir.dy)) { 
+                            // RJ3NA L-CHECK
+                             if (!checkCollision(ghost, dir.dx, dir.dy)) { 
                                 const newX = ghost.x + dir.dx; const newY = ghost.y + dir.dy;
                                 const distance = Math.hypot(targetX - newX, targetY - newY);
                                 if (distance < minDistance) { minDistance = distance; bestDir = dir; }
-                            // }
+                            }
                         }
                     } else { // FLEE
                         let maxDistance = -1;
                         for (const dir of directions) {
                            if ((dir.dx === -ghost.dx && dir.dy === -ghost.dy) && (ghost.dx !== 0 || ghost.dy !== 0)) continue; 
-                           // 7YD COLLISION CHECK HNA
-                           // if (!checkCollision(ghost, dir.dx, dir.dy)) {
+                           // RJ3NA L-CHECK
+                            if (!checkCollision(ghost, dir.dx, dir.dy)) {
                                 const newX = ghost.x + dir.dx; const newY = ghost.y + dir.dy;
                                 const distance = Math.hypot(player.x - newX, player.y - newY);
                                 if (distance > maxDistance) { maxDistance = distance; bestDir = dir; }
-                           // }
+                           }
                         }
                     }
 
                      let moved = false;
-                     if (bestDir) { ghost.dx = bestDir.dx; ghost.dy = bestDir.dy; } 
-                     else { // Mbloki (impossible db), wla ma 3ndo fin ymchi
-                        ghost.dx = 0; ghost.dy = 0; 
+                     if (bestDir) { 
+                         ghost.dx = bestDir.dx; 
+                         ghost.dy = bestDir.dy; 
+                     } else { 
+                         // Mbloki, 7awl trje3 llor
+                         if (!checkCollision(ghost, -ghost.dx, -ghost.dy)) {
+                            ghost.dx = -ghost.dx;
+                            ghost.dy = -ghost.dy;
+                         } else { // Mbloki mn kolchi
+                            ghost.dx = 0; 
+                            ghost.dy = 0; 
+                         }
                      }
 
-                     // T7RK DIMA
-                     ghost.x += ghost.dx; 
-                     ghost.y += ghost.dy; 
-                     moved = true; 
+                     // T7RK ILA MA KANCH MBLOKI
+                      if (!checkCollision(ghost, ghost.dx, ghost.dy)) {
+                         ghost.x += ghost.dx; 
+                         ghost.y += ghost.dy; 
+                         moved = true; 
+                      } else {
+                         // Mbloki f l'ittijah l-mkhtar, wqef db
+                         ghost.dx = 0;
+                         ghost.dy = 0;
+                      }
                      
                     // Tunnel wrapping (kima kan)
                     const canvasWidth = canvasRef.current.width;
@@ -304,7 +379,7 @@
                  if (ghostStatesChanged) {
                     setGhostStates(ghostsRef.current.map(g => ({ id: g.originalColor, isFrightened: g.isFrightened, x: g.x, y: g.y, color: g.color })));
                  }
-            }, [currentRound]); // 7ydna checkCollision mn dependencies
+            }, [checkCollision, currentRound]); 
 
             const checkGhostPlayerCollision = useCallback(() => { /* ... kima kan ... */ 
                 const player = playerRef.current; const ghosts = ghostsRef.current; let livesLost = 0; let ghostsEaten = []; 
