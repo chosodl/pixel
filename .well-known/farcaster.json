@@ -1,1 +1,33 @@
-
+{
+  "accountAssociation": {
+    "header": "",
+    "payload": "",
+    "signature": ""
+  },
+  "baseBuilder": {
+    "allowedAddresses": [""] 
+  },
+  "miniapp": {
+    "version": "1",
+    "name": "Pixel Muncher",
+    "homeUrl": "https://pixel-coral-theta.vercel.app/", 
+    "iconUrl": "https://<YOUR_APP_URL>/pacman-icon.png", 
+    "splashImageUrl": "https://<YOUR_APP_URL>/pacman-splash.png", 
+    "splashBackgroundColor": "#111827",
+    "webhookUrl": "", 
+    "subtitle": "Classic arcade munching fun!",
+    "description": "Navigate the maze, eat pellets, and avoid ghosts in this classic arcade game.",
+    "screenshotUrls": [
+      "https://<YOUR_APP_URL>/screenshot1.png",
+      "https://<YOUR_APP_URL>/screenshot2.png"
+    ],
+    "primaryCategory": "games",
+    "tags": ["pacman", "arcade", "miniapp", "game"],
+    "heroImageUrl": "https://<YOUR_APP_URL>/pixel-muncher-embed.png", 
+    "tagline": "Eat pellets, avoid ghosts!",
+    "ogTitle": "Pixel Muncher - Mini App",
+    "ogDescription": "Classic arcade munching fun!",
+    "ogImageUrl": "https://<YOUR_APP_URL>/pixel-muncher-embed.png", 
+    "noindex": true
+  }
+}
