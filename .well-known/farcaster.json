@@ -13,7 +13,7 @@
     "version": "1",
     "name": "Pixel Muncher", 
     "homeUrl": "https://pixel-coral-theta.vercel.app/", 
-    "iconUrl": "https://pixel-coral-theta.vercel.app/pacman-icon.png", 
+    "iconUrl": "https://images.seeklogo.com/logo-png/34/1/pac-man-retro-logo-png_seeklogo-348439.png", 
     "splashImageUrl": "https://pixel-coral-theta.vercel.app/pacman-splash.png", 
     "splashBackgroundColor": "#111827", 
     "subtitle": "Classic arcade munching fun!", 
