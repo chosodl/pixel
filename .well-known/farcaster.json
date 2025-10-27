@@ -7,7 +7,7 @@
   "baseBuilder": {
     "allowedAddresses": [
       "0x0e315015a4ee8d5d6c4b43e300df76b965d55bdd"
-    ] 
+  ] 
   },
   "miniapp": {
     "version": "1",
